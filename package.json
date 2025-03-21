@@ -1,0 +1,43 @@
+{
+  "name": "tennis-tournament-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -H 0.0.0.0",
+    "build": "next build",
+    "export": "next build && next export",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@g-loot/react-tournament-brackets": "^1.0.30",
+    "@tailwindcss/forms": "^0.5.6",
+    "@tanstack/react-query": "^4.36.1",
+    "axios": "^1.5.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^2.30.0",
+    "framer-motion": "^10.16.4",
+    "lucide-react": "^0.483.0",
+    "next": "14.0.0",
+    "next-auth": "^4.24.4",
+    "react": "^18",
+    "react-beautiful-dnd": "^13.1.1",
+    "react-dom": "^18",
+    "react-query": "^3.39.3",
+    "socket.io-client": "^4.7.2",
+    "tailwind-merge": "^3.0.2",
+    "zustand": "^4.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-beautiful-dnd": "^13.1.5",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.0",
+    "postcss": "^8",
+    "tailwindcss": "^3",
+    "typescript": "^5"
+  }
+}
