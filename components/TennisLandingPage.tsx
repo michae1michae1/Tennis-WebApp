@@ -25,7 +25,7 @@ function TennisLandingPage() {
             initial={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
-            Elevate Your <span className="text-primary">Tennis</span> Community
+            Elevate Your <span className="text-primary">Tennis</span> Experience
           </motion.h1>
           
           <motion.p
@@ -35,10 +35,11 @@ function TennisLandingPage() {
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
           >
             Create, manage, and participate in custom tennis tournaments and ladder systems. 
-            Designed by communities, and you!
+            Use popular formats and structures, or create your own!
           </motion.p>
 
           <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mt-10">
+            <Link href="/tournaments/create">
             <motion.button
               className="bg-primary text-white px-6 py-3 rounded-full font-medium text-lg shadow-lg"
               animate={{ opacity: 1, y: 0 }}
@@ -52,7 +53,8 @@ function TennisLandingPage() {
             >
               Create Tournament
             </motion.button>
-            
+            </Link>
+
             <Link href="/tournaments">
               <motion.button
                 className="bg-secondary text-text px-6 py-3 rounded-full font-medium text-lg shadow-lg"

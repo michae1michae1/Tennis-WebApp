@@ -1,3 +1,13 @@
+// Add this function to define which tournament IDs should be pre-rendered
+export async function generateStaticParams() {
+  // Return all tournament IDs that should be pre-generated
+  return [
+    { id: '1' },
+    { id: '2' },
+    { id: '3' }
+  ];
+}
+
 export default function TournamentDetail({ params }: { params: { id: string } }) {
   // This would be fetched from an API in a real app
   const tournament = {

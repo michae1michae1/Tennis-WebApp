@@ -1,10 +1,37 @@
 'use client';
 
-import React, { useState } from 'react';
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
+import React, { useState, useEffect, useMemo } from 'react';
+import { DragDropContext, Droppable, Draggable, DropResult, DroppableProvided, DroppableStateSnapshot } from 'react-beautiful-dnd';
 import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import FlowchartConnector from '@/components/ui/FlowchartConnector';
 import TournamentPreview from '@/components/ui/TournamentPreview';
+
+// Patching react-beautiful-dnd for React 18
+interface StrictModeDroppableProps {
+  children: (provided: DroppableProvided, snapshot: DroppableStateSnapshot) => React.ReactElement;
+  droppableId: string;
+  [key: string]: any;
+}
+
+const StrictModeDroppable = ({ children, ...props }: StrictModeDroppableProps) => {
+  const [enabled, setEnabled] = useState(false);
+  
+  useEffect(() => {
+    // This is needed for react-beautiful-dnd to work in React 18 strict mode
+    const animation = requestAnimationFrame(() => setEnabled(true));
+    return () => {
+      cancelAnimationFrame(animation);
+      setEnabled(false);
+    };
+  }, []);
+  
+  if (!enabled) {
+    return null;
+  }
+  
+  return <Droppable {...props}>{children}</Droppable>;
+};
 
 // Define types
 interface TournamentOption {
@@ -83,36 +110,74 @@ export default function CreateTournamentPage() {
   const [tournamentName, setTournamentName] = useState('');
   const [selectedOptions, setSelectedOptions] = useState<TournamentOption[]>([]);
   const [flowchartElements, setFlowchartElements] = useState<TournamentOption[]>([]);
+  const [showHelper, setShowHelper] = useState(true);
+  const [isDragging, setIsDragging] = useState(false);
+  const [activeItem, setActiveItem] = useState<string | null>(null);
 
-  // Handle drag end for options
+  // Patch react-beautiful-dnd for React 18
+  useEffect(() => {
+    // This is to fix the issue with react-beautiful-dnd in React 18
+    const originalGetComputedStyle = window.getComputedStyle;
+    window.getComputedStyle = (elt: Element) => {
+      const style = originalGetComputedStyle(elt);
+      if (elt instanceof HTMLElement && elt.style.transform && style.transform === 'none') {
+        // Force return the transform that was set directly on the element
+        Object.defineProperty(style, 'transform', {
+          value: elt.style.transform,
+          enumerable: true,
+          configurable: true,
+        });
+      }
+      return style;
+    };
+    
+    return () => {
+      window.getComputedStyle = originalGetComputedStyle;
+    };
+  }, []);
+
+  // Hide helper after 10 seconds or when user adds first element
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowHelper(false);
+    }, 10000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (flowchartElements.length > 0) {
+      setShowHelper(false);
+    }
+  }, [flowchartElements]);
+
+  // Add option to flowchart when clicked
+  const handleOptionClick = (option: TournamentOption) => {
+    // Add to the end of the flowchart
+    setFlowchartElements([...flowchartElements, option]);
+  };
+
+  // Handle drag end for flowchart elements (rearranging)
   const handleDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
+    setIsDragging(false);
+    setActiveItem(null);
     
-    const { source, destination } = result;
-    
-    // If moving within the flowchart
-    if (source.droppableId === 'flowchart' && destination.droppableId === 'flowchart') {
-      const newOrder = Array.from(flowchartElements);
-      const [movedItem] = newOrder.splice(source.index, 1);
-      newOrder.splice(destination.index, 0, movedItem);
-      setFlowchartElements(newOrder);
+    // dropped outside the list
+    if (!result.destination) {
       return;
     }
     
-    // If adding from options to flowchart
-    if (destination.droppableId === 'flowchart') {
-      // Find the option being dragged
-      const category = optionCategories.find(cat => 
-        cat.id === source.droppableId.replace('options-', '')
-      );
-      
-      if (category) {
-        const option = category.options[source.index];
-        if (!flowchartElements.some(el => el.id === option.id)) {
-          setFlowchartElements([...flowchartElements, option]);
-        }
-      }
-    }
+    // reorder the items
+    const items = Array.from(flowchartElements);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    
+    setFlowchartElements(items);
+  };
+
+  // Add a new handler for drag start
+  const handleDragStart = () => {
+    setIsDragging(true);
   };
 
   // Generate flowchart based on selections
@@ -183,6 +248,26 @@ export default function CreateTournamentPage() {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-primary mb-6">Create New Tournament</h1>
       
+      {showHelper && (
+        <div className="card bg-blue-50 border border-blue-200 mb-6 relative">
+          <button 
+            className="absolute top-2 right-2 text-blue-400 hover:text-blue-600"
+            onClick={() => setShowHelper(false)}
+          >
+            ×
+          </button>
+          <h3 className="text-blue-800 mb-2">How to Create Your Tournament</h3>
+          <ol className="text-blue-700 pl-5 list-decimal">
+            <li className="mb-1">Enter a name for your tournament</li>
+            <li className="mb-1">Click options from the left panel to add them to your tournament flow</li>
+            <li className="mb-1">Rearrange elements in the flow by dragging them to new positions</li>
+            <li className="mb-1">Remove elements by clicking the × button</li>
+            <li className="mb-1">Click "Generate Template" to organize options by category</li>
+            <li className="mb-1">Save your tournament when you're ready</li>
+          </ol>
+        </div>
+      )}
+      
       <div className="card mb-6">
         <div className="mb-4">
           <label htmlFor="tournamentName" className="block text-sm font-medium text-gray-700 mb-1">
@@ -205,46 +290,26 @@ export default function CreateTournamentPage() {
           <div className="card">
             <h2 className="text-primary mb-4">Tournament Options</h2>
             <p className="text-sm text-gray-600 mb-4">
-              Drag options to the flowchart area to build your tournament
+              Click options to add them to your tournament flow
             </p>
             
-            <DragDropContext onDragEnd={handleDragEnd}>
-              {optionCategories.map((category) => (
-                <div key={category.id} className="mb-6">
-                  <h3 className="text-accent font-medium mb-2">{category.title}</h3>
-                  <Droppable droppableId={`options-${category.id}`} isDropDisabled={true}>
-                    {(provided) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className="grid grid-cols-2 gap-2"
-                      >
-                        {category.options.map((option, index) => (
-                          <Draggable
-                            key={option.id}
-                            draggableId={option.id}
-                            index={index}
-                          >
-                            {(provided) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className="bg-white border border-gray-200 rounded p-2 flex items-center shadow-sm hover:shadow cursor-pointer"
-                              >
-                                <span className="mr-2">{option.icon}</span>
-                                <span className="text-sm">{option.label}</span>
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
+            {optionCategories.map((category) => (
+              <div key={category.id} className="mb-6">
+                <h3 className="text-accent font-medium mb-2">{category.title}</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {category.options.map((option) => (
+                    <button
+                      key={`${category.id}-${option.id}`}
+                      onClick={() => handleOptionClick(option)}
+                      className="bg-white border border-gray-200 rounded p-2 flex items-center shadow-sm hover:shadow hover:border-primary transition-all duration-200 text-left"
+                    >
+                      <span className="mr-2">{option.icon}</span>
+                      <span className="text-sm">{option.label}</span>
+                    </button>
+                  ))}
                 </div>
-              ))}
-            </DragDropContext>
+              </div>
+            ))}
           </div>
         </div>
         
@@ -260,61 +325,66 @@ export default function CreateTournamentPage() {
               </button>
             </div>
             
-            <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable droppableId="flowchart">
+            <DragDropContext 
+              onDragEnd={handleDragEnd}
+              onDragStart={handleDragStart}
+            >
+              <StrictModeDroppable droppableId="flowchart">
                 {(provided, snapshot) => (
                   <div
-                    ref={provided.innerRef}
                     {...provided.droppableProps}
+                    ref={provided.innerRef}
                     className={`flex-grow p-4 border-2 border-dashed rounded-lg ${
-                      snapshot.isDraggingOver ? 'bg-gray-50 border-primary' : 'border-gray-300'
+                      snapshot.isDraggingOver ? 'bg-green-50 border-primary' : 'border-gray-300'
                     } ${flowchartElements.length === 0 ? 'flex items-center justify-center' : ''}`}
                     style={{ minHeight: '400px' }}
                   >
                     {flowchartElements.length === 0 ? (
                       <p className="text-gray-400">
-                        Drag tournament elements here to create your flow
+                        Click options from the left panel to add them here
                       </p>
                     ) : (
-                      <div className="relative flex flex-col">
+                      <div className="space-y-3">
                         {flowchartElements.map((element, index) => (
-                          <React.Fragment key={`flow-${element.id}-${index}`}>
-                            <Draggable draggableId={element.id} index={index}>
-                              {(provided) => (
-                                <div
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  className="bg-white border border-primary rounded p-3 flex items-center shadow-md relative z-10"
-                                >
-                                  <span className="mr-3 text-xl">{element.icon}</span>
-                                  <span className="font-medium">{element.label}</span>
-                                  <button
-                                    className="ml-auto text-gray-400 hover:text-red-500"
-                                    onClick={() => {
-                                      const newElements = [...flowchartElements];
-                                      newElements.splice(index, 1);
-                                      setFlowchartElements(newElements);
-                                    }}
-                                  >
-                                    ×
-                                  </button>
+                          <Draggable
+                            key={`element-${element.id}-${index}`}
+                            draggableId={`element-${element.id}-${index}`}
+                            index={index}
+                          >
+                            {(provided, snapshot) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className={`bg-white border ${
+                                  snapshot.isDragging ? 'border-secondary shadow-xl' : 'border-primary'
+                                } rounded p-3 flex items-center shadow-md`}
+                              >
+                                <div className="mr-3 cursor-grab active:cursor-grabbing p-1 hover:bg-gray-100 rounded">
+                                  <span className="text-xl">{element.icon}</span>
                                 </div>
-                              )}
-                            </Draggable>
-                            {index < flowchartElements.length - 1 && (
-                              <div className="py-2 flex justify-center">
-                                <div className="w-0.5 h-6 bg-primary"></div>
+                                <span className="font-medium">{element.label}</span>
+                                <button
+                                  className="ml-auto text-gray-400 hover:text-red-500"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    const newElements = [...flowchartElements];
+                                    newElements.splice(index, 1);
+                                    setFlowchartElements(newElements);
+                                  }}
+                                >
+                                  ×
+                                </button>
                               </div>
                             )}
-                          </React.Fragment>
+                          </Draggable>
                         ))}
+                        {provided.placeholder}
                       </div>
                     )}
-                    {provided.placeholder}
                   </div>
                 )}
-              </Droppable>
+              </StrictModeDroppable>
             </DragDropContext>
             
             {flowchartElements.length > 0 && (
