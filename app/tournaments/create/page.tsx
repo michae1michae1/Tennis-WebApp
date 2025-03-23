@@ -38,69 +38,77 @@ interface TournamentOption {
   id: string;
   label: string;
   icon: string;
+  type?: 'regular' | 'indicator'; // Added type field to distinguish indicators from regular options
+  category?: string; // Added category field to track the source category
+  structureId?: string; // Unique ID for structure elements
 }
 
 interface OptionCategory {
   id: string;
   title: string;
   options: TournamentOption[];
+  isIndicator?: boolean; // Whether this category contains indicators
 }
 
 // Tournament option categories
 const optionCategories: OptionCategory[] = [
   {
     id: 'format',
-    title: 'Tournament Format',
+    title: 'Format Indicators',
+    isIndicator: true, // Mark as indicator category
     options: [
-      { id: 'singles', label: 'Singles', icon: '👤' },
-      { id: 'doubles', label: 'Doubles', icon: '👥' },
-      { id: 'mixed', label: 'Mixed Doubles', icon: '👫' }
+      { id: 'singles', label: 'Singles', icon: '👤', type: 'indicator', category: 'format' },
+      { id: 'doubles', label: 'Doubles', icon: '👥', type: 'indicator', category: 'format' },
+      { id: 'mixed', label: 'Mixed Doubles', icon: '👫', type: 'indicator', category: 'format' }
     ]
   },
   {
     id: 'structure',
     title: 'Tournament Structure',
     options: [
-      { id: 'elimination', label: 'Single Elimination', icon: '🏆' },
-      { id: 'doubleElimination', label: 'Double Elimination', icon: '🔄' },
-      { id: 'roundRobin', label: 'Round Robin', icon: '🔁' },
-      { id: 'swiss', label: 'Swiss System', icon: '🇨🇭' },
-      { id: 'ladder', label: 'Ladder Tournament', icon: '🪜' },
-      { id: 'groupStage', label: 'Group Stage + Knockout', icon: '👥➡️🏆' }
+      { id: 'elimination', label: 'Single Elimination', icon: '🏆', type: 'regular', category: 'structure' },
+      { id: 'doubleElimination', label: 'Double Elimination', icon: '🔄', type: 'regular', category: 'structure' },
+      { id: 'roundRobin', label: 'Round Robin', icon: '🔁', type: 'regular', category: 'structure' },
+      { id: 'swiss', label: 'Swiss System', icon: '🇨🇭', type: 'regular', category: 'structure' },
+      { id: 'ladder', label: 'Ladder Tournament', icon: '🪜', type: 'regular', category: 'structure' },
+      { id: 'groupStage', label: 'Group Stage + Knockout', icon: '👥➡️🏆', type: 'regular', category: 'structure' }
     ]
   },
   {
     id: 'scoring',
     title: 'Scoring Rules',
+    isIndicator: true, // Mark as indicator category
     options: [
-      { id: 'bestOf3', label: 'Best of 3 Sets', icon: '3️⃣' },
-      { id: 'bestOf5', label: 'Best of 5 Sets', icon: '5️⃣' },
-      { id: 'proSets', label: 'Pro Sets (8 or 10 games)', icon: '🎮' },
-      { id: 'fastFour', label: 'Fast4 Format', icon: '⏱️' },
-      { id: 'tiebreak', label: 'Tiebreak Deciding Set', icon: '🔄' },
-      { id: 'noAd', label: 'No-Ad Scoring', icon: '⏭️' }
+      { id: 'bestOf3', label: 'Best of 3 Sets', icon: '3️⃣', type: 'indicator', category: 'scoring' },
+      { id: 'bestOf5', label: 'Best of 5 Sets', icon: '5️⃣', type: 'indicator', category: 'scoring' },
+      { id: 'proSets', label: 'Pro Sets (8 or 10 games)', icon: '🎮', type: 'indicator', category: 'scoring' },
+      { id: 'fastFour', label: 'Fast4 Format', icon: '⏱️', type: 'indicator', category: 'scoring' },
+      { id: 'tiebreak', label: 'Tiebreak Deciding Set', icon: '🔄', type: 'indicator', category: 'scoring' },
+      { id: 'noAd', label: 'No-Ad Scoring', icon: '⏭️', type: 'indicator', category: 'scoring' }
     ]
   },
   {
     id: 'scheduling',
     title: 'Scheduling Options',
+    isIndicator: true, // Mark as indicator category
     options: [
-      { id: 'fixedSchedule', label: 'Fixed Schedule', icon: '📅' },
-      { id: 'playerArranged', label: 'Player-Arranged Matches', icon: '🤝' },
-      { id: 'weekendTournament', label: 'Weekend Tournament', icon: '🌞' },
-      { id: 'multiWeek', label: 'Multi-Week Tournament', icon: '📆' }
+      { id: 'fixedSchedule', label: 'Fixed Schedule', icon: '📅', type: 'indicator', category: 'scheduling' },
+      { id: 'playerArranged', label: 'Player-Arranged Matches', icon: '🤝', type: 'indicator', category: 'scheduling' },
+      { id: 'weekendTournament', label: 'Weekend Tournament', icon: '🌞', type: 'indicator', category: 'scheduling' },
+      { id: 'multiWeek', label: 'Multi-Week Tournament', icon: '📆', type: 'indicator', category: 'scheduling' }
     ]
   },
   {
     id: 'additional',
     title: 'Additional Features',
+    isIndicator: true, // Mark as indicator category
     options: [
-      { id: 'seeding', label: 'Player Seeding', icon: '🌱' },
-      { id: 'consolation', label: 'Consolation Bracket', icon: '🥈' },
-      { id: 'umpires', label: 'Umpired Matches', icon: '👨‍⚖️' },
-      { id: 'courtAssignment', label: 'Automatic Court Assignment', icon: '🎾' },
-      { id: 'weatherPolicy', label: 'Weather Policy', icon: '☔' },
-      { id: 'ageGroups', label: 'Age Group Divisions', icon: '👶👨👵' }
+      { id: 'seeding', label: 'Player Seeding', icon: '🌱', type: 'indicator', category: 'additional' },
+      { id: 'consolation', label: 'Consolation Bracket', icon: '🥈', type: 'indicator', category: 'additional' },
+      { id: 'umpires', label: 'Umpired Matches', icon: '👨‍⚖️', type: 'indicator', category: 'additional' },
+      { id: 'courtAssignment', label: 'Automatic Court Assignment', icon: '🎾', type: 'indicator', category: 'additional' },
+      { id: 'weatherPolicy', label: 'Weather Policy', icon: '☔', type: 'indicator', category: 'additional' },
+      { id: 'ageGroups', label: 'Age Group Divisions', icon: '👶👨👵', type: 'indicator', category: 'additional' }
     ]
   }
 ];
@@ -110,6 +118,10 @@ export default function CreateTournamentPage() {
   const [tournamentName, setTournamentName] = useState('');
   const [selectedOptions, setSelectedOptions] = useState<TournamentOption[]>([]);
   const [flowchartElements, setFlowchartElements] = useState<TournamentOption[]>([]);
+  const [selectedIndicators, setSelectedIndicators] = useState<TournamentOption[]>([]);
+  const [activeStructureId, setActiveStructureId] = useState<string | null>(null);
+  // Track indicators for each structure element by structure element id
+  const [structureIndicators, setStructureIndicators] = useState<Record<string, TournamentOption[]>>({});
   const [showHelper, setShowHelper] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
   const [activeItem, setActiveItem] = useState<string | null>(null);
@@ -151,10 +163,46 @@ export default function CreateTournamentPage() {
     }
   }, [flowchartElements]);
 
-  // Add option to flowchart when clicked
+  // Add option to flowchart when clicked, handle indicators differently
   const handleOptionClick = (option: TournamentOption) => {
-    // Add to the end of the flowchart
-    setFlowchartElements([...flowchartElements, option]);
+    if (option.type === 'indicator') {
+      // For indicators, we need to know if there's an active structure
+      if (activeStructureId) {
+        // Add to the active structure's indicators
+        toggleStructureIndicator(activeStructureId, option);
+      } else {
+        // If no active structure, add to global indicators (backwards compatibility)
+        if (selectedIndicators.some(i => i.id === option.id)) {
+          // If already selected, remove it
+          setSelectedIndicators(selectedIndicators.filter(i => i.id !== option.id));
+        } else {
+          // Add to selected indicators
+          // For format indicators, we want to ensure only one is active at a time
+          if (option.category === 'format') {
+            setSelectedIndicators([
+              ...selectedIndicators.filter(i => i.category !== 'format'), 
+              option
+            ]);
+          } else {
+            setSelectedIndicators([...selectedIndicators, option]);
+          }
+        }
+      }
+    } else if (option.category === 'structure') {
+      // For structure options, create a unique ID and add to flowchart
+      const structureId = generateStructureId();
+      const structureWithId = {
+        ...option,
+        structureId // Add a unique ID to track this structure element
+      };
+      setFlowchartElements([...flowchartElements, structureWithId]);
+      
+      // Set this as the active structure
+      setActiveStructureId(structureId);
+    } else {
+      // Regular options go to the flowchart
+      setFlowchartElements([...flowchartElements, option]);
+    }
   };
 
   // Handle drag end for flowchart elements (rearranging)
@@ -189,33 +237,22 @@ export default function CreateTournamentPage() {
     
     // Here we would process the selected options and generate a flowchart template
     // For the MVP, we'll just organize the elements in a logical order
+    // Note: We don't include indicators in the flowchart directly, as they're attached to elements
     
-    const formatOptions = flowchartElements.filter(el => 
-      optionCategories.find(cat => cat.id === 'format')?.options.some(opt => opt.id === el.id)
+    // Filter only regular options
+    const regularOptions = flowchartElements.filter(el => el.type === 'regular');
+    
+    const structureOptions = regularOptions.filter(el => 
+      el.category === 'structure'
     );
     
-    const structureOptions = flowchartElements.filter(el => 
-      optionCategories.find(cat => cat.id === 'structure')?.options.some(opt => opt.id === el.id)
-    );
-    
-    const scoringOptions = flowchartElements.filter(el => 
-      optionCategories.find(cat => cat.id === 'scoring')?.options.some(opt => opt.id === el.id)
-    );
-    
-    const schedulingOptions = flowchartElements.filter(el => 
-      optionCategories.find(cat => cat.id === 'scheduling')?.options.some(opt => opt.id === el.id)
-    );
-    
-    const additionalOptions = flowchartElements.filter(el => 
-      optionCategories.find(cat => cat.id === 'additional')?.options.some(opt => opt.id === el.id)
+    const additionalOptions = regularOptions.filter(el => 
+      el.category === 'additional'
     );
     
     // Combine all in a logical order
     const organizedElements = [
-      ...formatOptions,
       ...structureOptions,
-      ...scoringOptions,
-      ...schedulingOptions,
       ...additionalOptions
     ];
     
@@ -233,15 +270,79 @@ export default function CreateTournamentPage() {
       return;
     }
     
+    // Organize indicators by category
+    const formatIndicators = selectedIndicators.filter(i => i.category === 'format');
+    const scoringIndicators = selectedIndicators.filter(i => i.category === 'scoring');
+    const schedulingIndicators = selectedIndicators.filter(i => i.category === 'scheduling');
+    const additionalIndicators = selectedIndicators.filter(i => i.category === 'additional');
+    
     // Here we would save the tournament configuration
     // For now, we'll just log it and navigate back
     console.log('Tournament saved:', {
       name: tournamentName,
-      elements: flowchartElements
+      elements: flowchartElements,
+      indicators: {
+        format: formatIndicators,
+        scoring: scoringIndicators,
+        scheduling: schedulingIndicators,
+        additional: additionalIndicators
+      }
     });
     
     alert('Tournament created successfully!');
     router.push('/tournaments');
+  };
+
+  // Determine if an option has indicators attached
+  const getAttachedIndicators = (option: TournamentOption) => {
+    // For structure options, attach format, scoring, scheduling, and additional indicators
+    if (option.category === 'structure') {
+      return selectedIndicators.filter(i => 
+        i.category === 'format' || 
+        i.category === 'scoring' || 
+        i.category === 'scheduling' ||
+        i.category === 'additional'
+      );
+    }
+    return [];
+  };
+
+  // Generate a unique ID for a structure element
+  const generateStructureId = () => {
+    return `structure_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+  };
+
+  // Get indicators for a specific structure
+  const getStructureIndicators = (structureId: string) => {
+    return structureIndicators[structureId] || [];
+  };
+
+  // Add or remove indicator for a specific structure
+  const toggleStructureIndicator = (structureId: string, indicator: TournamentOption) => {
+    const currentIndicators = structureIndicators[structureId] || [];
+    const hasIndicator = currentIndicators.some(i => i.id === indicator.id && i.category === indicator.category);
+    
+    let newIndicators;
+    if (hasIndicator) {
+      // Remove indicator
+      newIndicators = currentIndicators.filter(i => !(i.id === indicator.id && i.category === indicator.category));
+    } else {
+      // For format indicators, we want to ensure only one is active at a time for a structure
+      if (indicator.category === 'format') {
+        newIndicators = [
+          ...currentIndicators.filter(i => i.category !== 'format'),
+          indicator
+        ];
+      } else {
+        // Add indicator
+        newIndicators = [...currentIndicators, indicator];
+      }
+    }
+    
+    setStructureIndicators({
+      ...structureIndicators,
+      [structureId]: newIndicators
+    });
   };
 
   return (
@@ -293,23 +394,53 @@ export default function CreateTournamentPage() {
               Click options to add them to your tournament flow
             </p>
             
-            {optionCategories.map((category) => (
-              <div key={category.id} className="mb-6">
-                <h3 className="text-accent font-medium mb-2">{category.title}</h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {category.options.map((option) => (
-                    <button
-                      key={`${category.id}-${option.id}`}
-                      onClick={() => handleOptionClick(option)}
-                      className="bg-white border border-gray-200 rounded p-2 flex items-center shadow-sm hover:shadow hover:border-primary transition-all duration-200 text-left"
-                    >
-                      <span className="mr-2">{option.icon}</span>
-                      <span className="text-sm">{option.label}</span>
-                    </button>
-                  ))}
+            {/* Render indicator categories first */}
+            {optionCategories
+              .filter(category => category.isIndicator)
+              .map((category) => (
+                <div key={category.id} className="mb-6">
+                  <h3 className="text-accent font-medium mb-2">{category.title}</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {category.options.map((option) => {
+                      const isSelected = selectedIndicators.some(i => i.id === option.id);
+                      return (
+                        <button
+                          key={`${category.id}-${option.id}`}
+                          onClick={() => handleOptionClick(option)}
+                          className={`rounded-full px-3 py-1 text-sm flex items-center transition-all duration-200 
+                            ${isSelected 
+                              ? 'bg-primary text-white font-medium shadow-md' 
+                              : 'bg-gray-100 hover:bg-gray-200 text-gray-800'}`}
+                        >
+                          <span className="mr-1">{option.icon}</span>
+                          {option.label}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            
+            {/* Render regular option categories */}
+            {optionCategories
+              .filter(category => !category.isIndicator)
+              .map((category) => (
+                <div key={category.id} className="mb-6">
+                  <h3 className="text-accent font-medium mb-2">{category.title}</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    {category.options.map((option) => (
+                      <button
+                        key={`${category.id}-${option.id}`}
+                        onClick={() => handleOptionClick(option)}
+                        className="bg-white border border-gray-200 rounded p-2 flex items-center shadow-sm hover:shadow hover:border-primary transition-all duration-200 text-left"
+                      >
+                        <span className="mr-2">{option.icon}</span>
+                        <span className="text-sm">{option.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
           </div>
         </div>
         
@@ -345,40 +476,119 @@ export default function CreateTournamentPage() {
                       </p>
                     ) : (
                       <div className="space-y-3">
-                        {flowchartElements.map((element, index) => (
-                          <Draggable
-                            key={`element-${element.id}-${index}`}
-                            draggableId={`element-${element.id}-${index}`}
-                            index={index}
-                          >
-                            {(provided, snapshot) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className={`bg-white border ${
-                                  snapshot.isDragging ? 'border-secondary shadow-xl' : 'border-primary'
-                                } rounded p-3 flex items-center shadow-md`}
-                              >
-                                <div className="mr-3 cursor-grab active:cursor-grabbing p-1 hover:bg-gray-100 rounded">
-                                  <span className="text-xl">{element.icon}</span>
-                                </div>
-                                <span className="font-medium">{element.label}</span>
-                                <button
-                                  className="ml-auto text-gray-400 hover:text-red-500"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    const newElements = [...flowchartElements];
-                                    newElements.splice(index, 1);
-                                    setFlowchartElements(newElements);
-                                  }}
+                        {flowchartElements.map((element, index) => {
+                          const attachedIndicators = getAttachedIndicators(element);
+                          
+                          return (
+                            <Draggable
+                              key={`element-${element.id}-${index}`}
+                              draggableId={`element-${element.id}-${index}`}
+                              index={index}
+                            >
+                              {(provided, snapshot) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  className={`bg-white border ${
+                                    snapshot.isDragging ? 'border-secondary shadow-xl' : 'border-primary'
+                                  } rounded p-3 flex flex-col shadow-md`}
                                 >
-                                  ×
-                                </button>
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
+                                  <div className="flex items-center">
+                                    <div className="mr-3 cursor-grab active:cursor-grabbing p-1 hover:bg-gray-100 rounded">
+                                      <span className="text-xl">{element.icon}</span>
+                                    </div>
+                                    <span className="font-medium">{element.label}</span>
+                                    <button
+                                      className="ml-auto text-gray-400 hover:text-red-500"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        const newElements = [...flowchartElements];
+                                        newElements.splice(index, 1);
+                                        setFlowchartElements(newElements);
+                                      }}
+                                    >
+                                      ×
+                                    </button>
+                                  </div>
+                                  
+                                  {/* Render attached indicators if any */}
+                                  {attachedIndicators.length > 0 && (
+                                    <div className="mt-2 ml-8">
+                                      {/* Format indicators */}
+                                      {attachedIndicators.filter(i => i.category === 'format').length > 0 && (
+                                        <div className="flex flex-wrap gap-1 mb-1">
+                                          {attachedIndicators
+                                            .filter(i => i.category === 'format')
+                                            .map((indicator) => (
+                                              <span 
+                                                key={indicator.id} 
+                                                className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary"
+                                              >
+                                                <span className="mr-1">{indicator.icon}</span>
+                                                {indicator.label}
+                                              </span>
+                                            ))}
+                                        </div>
+                                      )}
+                                      
+                                      {/* Scoring indicators */}
+                                      {attachedIndicators.filter(i => i.category === 'scoring').length > 0 && (
+                                        <div className="flex flex-wrap gap-1 mb-1">
+                                          {attachedIndicators
+                                            .filter(i => i.category === 'scoring')
+                                            .map((indicator) => (
+                                              <span 
+                                                key={indicator.id} 
+                                                className="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-700"
+                                              >
+                                                <span className="mr-1">{indicator.icon}</span>
+                                                {indicator.label}
+                                              </span>
+                                            ))}
+                                        </div>
+                                      )}
+                                      
+                                      {/* Scheduling indicators */}
+                                      {attachedIndicators.filter(i => i.category === 'scheduling').length > 0 && (
+                                        <div className="flex flex-wrap gap-1 mb-1">
+                                          {attachedIndicators
+                                            .filter(i => i.category === 'scheduling')
+                                            .map((indicator) => (
+                                              <span 
+                                                key={indicator.id} 
+                                                className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700"
+                                              >
+                                                <span className="mr-1">{indicator.icon}</span>
+                                                {indicator.label}
+                                              </span>
+                                            ))}
+                                        </div>
+                                      )}
+                                      
+                                      {/* Additional feature indicators */}
+                                      {attachedIndicators.filter(i => i.category === 'additional').length > 0 && (
+                                        <div className="flex flex-wrap gap-1">
+                                          {attachedIndicators
+                                            .filter(i => i.category === 'additional')
+                                            .map((indicator) => (
+                                              <span 
+                                                key={indicator.id} 
+                                                className="inline-flex items-center rounded-full bg-purple-100 px-2 py-0.5 text-xs text-purple-700"
+                                              >
+                                                <span className="mr-1">{indicator.icon}</span>
+                                                {indicator.label}
+                                              </span>
+                                            ))}
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </Draggable>
+                          );
+                        })}
                         {provided.placeholder}
                       </div>
                     )}
@@ -390,7 +600,7 @@ export default function CreateTournamentPage() {
             {flowchartElements.length > 0 && (
               <div className="mt-4">
                 <TournamentPreview 
-                  options={flowchartElements} 
+                  options={[...flowchartElements, ...selectedIndicators]} 
                   name={tournamentName || "New Tournament"} 
                 />
               </div>
