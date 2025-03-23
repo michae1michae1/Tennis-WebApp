@@ -8,49 +8,85 @@ interface TournamentOption {
   icon: string;
   type?: 'regular' | 'indicator';
   category?: string;
+  structureId?: string; // Unique ID for structure elements
 }
 
 interface TournamentPreviewProps {
   options: TournamentOption[];
   name: string;
+  structureIndicators?: Record<string, TournamentOption[]>;
+  activeStructureId?: string | null;
 }
 
-export default function TournamentPreview({ options, name }: TournamentPreviewProps) {
+export default function TournamentPreview({ 
+  options, 
+  name, 
+  structureIndicators = {}, 
+  activeStructureId = null 
+}: TournamentPreviewProps) {
   // Separate regular options and indicators
   const regularOptions = options.filter(opt => opt.type !== 'indicator');
   const indicators = options.filter(opt => opt.type === 'indicator');
   
+  // Get structures in the options
+  const structures = regularOptions.filter(opt => opt.category === 'structure');
+  
+  // Get indicators for currently active structure
+  const activeStructure = structures.find(s => s.structureId === activeStructureId);
+  const activeStructureIndicators = activeStructure && activeStructure.structureId 
+    ? structureIndicators[activeStructure.structureId] || []
+    : [];
+  
+  // Combine global indicators with active structure indicators
+  const allIndicators = [...indicators, ...activeStructureIndicators];
+  
   // Get format indicator if present
-  const formatIndicator = indicators.find(ind => ind.category === 'format');
+  const formatIndicator = allIndicators.find(ind => ind.category === 'format');
   
   // Get scoring indicators
-  const scoringIndicators = indicators.filter(ind => ind.category === 'scoring');
+  const scoringIndicators = allIndicators.filter(ind => ind.category === 'scoring');
   
   // Get scheduling indicators
-  const schedulingIndicators = indicators.filter(ind => ind.category === 'scheduling');
+  const schedulingIndicators = allIndicators.filter(ind => ind.category === 'scheduling');
   
   // Get additional feature indicators
-  const additionalIndicators = indicators.filter(ind => ind.category === 'additional');
+  const additionalIndicators = allIndicators.filter(ind => ind.category === 'additional');
   
-  // Determine tournament type from options
-  const hasElimination = regularOptions.some(opt => opt.id === 'elimination');
-  const hasDoubleElimination = regularOptions.some(opt => opt.id === 'doubleElimination');
-  const hasRoundRobin = regularOptions.some(opt => opt.id === 'roundRobin');
-  const hasGroupStage = regularOptions.some(opt => opt.id === 'groupStage');
-  const isLadder = regularOptions.some(opt => opt.id === 'ladder');
+  // Determine tournament type from options 
+  // Prioritize active structure if present, otherwise show preview based on all structures
+  let previewType = 'default';
+  
+  if (activeStructure) {
+    if (activeStructure.id === 'ladder') previewType = 'ladder';
+    else if (activeStructure.id === 'roundRobin') previewType = 'roundRobin';
+    else if (activeStructure.id === 'doubleElimination') previewType = 'doubleElimination';
+    else if (activeStructure.id === 'elimination' || activeStructure.id === 'groupStage') previewType = 'elimination';
+  } else {
+    const hasElimination = structures.some(opt => opt.id === 'elimination');
+    const hasDoubleElimination = structures.some(opt => opt.id === 'doubleElimination');
+    const hasRoundRobin = structures.some(opt => opt.id === 'roundRobin');
+    const hasGroupStage = structures.some(opt => opt.id === 'groupStage');
+    const isLadder = structures.some(opt => opt.id === 'ladder');
+    
+    if (isLadder) previewType = 'ladder';
+    else if (hasRoundRobin) previewType = 'roundRobin';
+    else if (hasDoubleElimination) previewType = 'doubleElimination';
+    else if (hasElimination || hasGroupStage) previewType = 'elimination';
+  }
   
   // Render appropriate preview based on tournament type
   const renderPreview = () => {
-    if (isLadder) {
-      return <LadderPreview format={formatIndicator} />;
-    } else if (hasRoundRobin) {
-      return <RoundRobinPreview format={formatIndicator} />;
-    } else if (hasDoubleElimination) {
-      return <DoubleEliminationPreview format={formatIndicator} />;
-    } else if (hasElimination || hasGroupStage) {
-      return <EliminationPreview format={formatIndicator} />;
-    } else {
-      return <DefaultPreview />;
+    switch (previewType) {
+      case 'ladder':
+        return <LadderPreview format={formatIndicator} />;
+      case 'roundRobin':
+        return <RoundRobinPreview format={formatIndicator} />;
+      case 'doubleElimination':
+        return <DoubleEliminationPreview format={formatIndicator} />;
+      case 'elimination':
+        return <EliminationPreview format={formatIndicator} />;
+      default:
+        return <DefaultPreview />;
     }
   };
 
@@ -85,8 +121,18 @@ export default function TournamentPreview({ options, name }: TournamentPreviewPr
 
   return (
     <div className="mt-4 bg-white rounded shadow-md p-4">
-      <h3 className="text-primary font-medium mb-3">
-        Tournament Structure Preview
+      <h3 className="text-primary font-medium mb-3 flex items-center">
+        <span>Tournament Structure Preview</span>
+        {activeStructure ? (
+          <span className="ml-2 px-2 py-0.5 bg-primary text-white rounded-md text-xs flex items-center">
+            {activeStructure.label}
+            <span className="ml-1 bg-white text-primary text-[10px] px-1 rounded">Active</span>
+          </span>
+        ) : structures.length > 0 ? (
+          <span className="ml-2 px-2 py-0.5 bg-gray-200 text-gray-700 rounded-md text-xs">
+            Global View
+          </span>
+        ) : null}
         {formatIndicator && renderIndicatorTag(formatIndicator)}
       </h3>
       

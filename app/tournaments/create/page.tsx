@@ -270,23 +270,34 @@ export default function CreateTournamentPage() {
       return;
     }
     
-    // Organize indicators by category
+    // Organize global indicators by category (for backwards compatibility)
     const formatIndicators = selectedIndicators.filter(i => i.category === 'format');
     const scoringIndicators = selectedIndicators.filter(i => i.category === 'scoring');
     const schedulingIndicators = selectedIndicators.filter(i => i.category === 'scheduling');
     const additionalIndicators = selectedIndicators.filter(i => i.category === 'additional');
+    
+    // Extract structure elements and their specific indicators
+    const structures = flowchartElements
+      .filter(el => el.category === 'structure')
+      .map(structure => ({
+        ...structure,
+        indicators: structureIndicators[structure.structureId || ''] || []
+      }));
     
     // Here we would save the tournament configuration
     // For now, we'll just log it and navigate back
     console.log('Tournament saved:', {
       name: tournamentName,
       elements: flowchartElements,
+      // Global indicators (for backward compatibility)
       indicators: {
         format: formatIndicators,
         scoring: scoringIndicators,
         scheduling: schedulingIndicators,
         additional: additionalIndicators
-      }
+      },
+      // Structure-specific indicators
+      structures
     });
     
     alert('Tournament created successfully!');
@@ -394,23 +405,60 @@ export default function CreateTournamentPage() {
               Click options to add them to your tournament flow
             </p>
             
+            {/* Show legend if we have an active structure */}
+            {activeStructureId && (
+              <div className="flex items-center gap-2 mb-4 text-xs p-2 bg-gray-50 rounded-md">
+                <div className="font-medium">Indicator Legend:</div>
+                <div className="flex items-center">
+                  <span className="inline-block w-3 h-3 bg-primary rounded-full mr-1"></span>
+                  Active Structure
+                </div>
+                <div className="flex items-center">
+                  <span className="inline-block w-3 h-3 bg-secondary rounded-full mr-1"></span>
+                  Global
+                </div>
+              </div>
+            )}
+            
             {/* Render indicator categories first */}
             {optionCategories
               .filter(category => category.isIndicator)
               .map((category) => (
                 <div key={category.id} className="mb-6">
-                  <h3 className="text-accent font-medium mb-2">{category.title}</h3>
+                  <h3 className="text-accent font-medium mb-2 flex items-center justify-between">
+                    <span>{category.title}</span>
+                    {activeStructureId && (
+                      <span className="text-xs bg-gray-100 px-2 py-0.5 rounded-full">
+                        {structureIndicators[activeStructureId]?.filter(i => i.category === category.id).length || 0} selected
+                      </span>
+                    )}
+                  </h3>
                   <div className="flex flex-wrap gap-2">
                     {category.options.map((option) => {
-                      const isSelected = selectedIndicators.some(i => i.id === option.id);
+                      // Check if this indicator is selected globally or for the active structure
+                      const isSelectedGlobally = selectedIndicators.some(i => i.id === option.id);
+                      const isSelectedForActiveStructure = activeStructureId && 
+                        structureIndicators[activeStructureId]?.some(i => i.id === option.id);
+                      
+                      // Determine the appropriate styling class
+                      let buttonClass = 'rounded-full px-3 py-1 text-sm flex items-center transition-all duration-200 ';
+                      
+                      if (isSelectedForActiveStructure) {
+                        // Selected for active structure - primary color
+                        buttonClass += 'bg-primary text-white font-medium shadow-md';
+                      } else if (isSelectedGlobally) {
+                        // Selected globally - secondary color
+                        buttonClass += 'bg-secondary text-white font-medium';
+                      } else {
+                        // Not selected
+                        buttonClass += 'bg-gray-100 hover:bg-gray-200 text-gray-800';
+                      }
+                      
                       return (
                         <button
                           key={`${category.id}-${option.id}`}
                           onClick={() => handleOptionClick(option)}
-                          className={`rounded-full px-3 py-1 text-sm flex items-center transition-all duration-200 
-                            ${isSelected 
-                              ? 'bg-primary text-white font-medium shadow-md' 
-                              : 'bg-gray-100 hover:bg-gray-200 text-gray-800'}`}
+                          className={buttonClass}
                         >
                           <span className="mr-1">{option.icon}</span>
                           {option.label}
@@ -456,6 +504,13 @@ export default function CreateTournamentPage() {
               </button>
             </div>
             
+            {flowchartElements.some(el => el.category === 'structure') && (
+              <div className="bg-blue-50 p-3 rounded-md mb-4 text-sm text-blue-700 border border-blue-200">
+                <p className="mb-1 font-medium">Multiple Tournament Structures</p>
+                <p>Click on a tournament structure to select it and apply specific tags. Each structure can have its own set of format, scoring, scheduling, and additional feature indicators.</p>
+              </div>
+            )}
+            
             <DragDropContext 
               onDragEnd={handleDragEnd}
               onDragStart={handleDragStart}
@@ -477,7 +532,14 @@ export default function CreateTournamentPage() {
                     ) : (
                       <div className="space-y-3">
                         {flowchartElements.map((element, index) => {
-                          const attachedIndicators = getAttachedIndicators(element);
+                          const isStructure = element.category === 'structure';
+                          const structureId = isStructure ? element.structureId : null;
+                          const isActiveStructure = isStructure && structureId === activeStructureId;
+                          
+                          // Get indicators based on whether this is a structure or not
+                          const attachedIndicators = isStructure && structureId
+                            ? getStructureIndicators(structureId)
+                            : getAttachedIndicators(element);
                           
                           return (
                             <Draggable
@@ -491,14 +553,45 @@ export default function CreateTournamentPage() {
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
                                   className={`bg-white border ${
-                                    snapshot.isDragging ? 'border-secondary shadow-xl' : 'border-primary'
+                                    snapshot.isDragging ? 'border-secondary shadow-xl' : 
+                                    isActiveStructure ? 'border-primary-500 border-2' : 'border-primary'
                                   } rounded p-3 flex flex-col shadow-md`}
+                                  onClick={() => {
+                                    if (isStructure && structureId) {
+                                      setActiveStructureId(activeStructureId === structureId ? null : structureId);
+                                    }
+                                  }}
                                 >
                                   <div className="flex items-center">
                                     <div className="mr-3 cursor-grab active:cursor-grabbing p-1 hover:bg-gray-100 rounded">
                                       <span className="text-xl">{element.icon}</span>
                                     </div>
                                     <span className="font-medium">{element.label}</span>
+                                    {isStructure && (
+                                      <div className="ml-2 flex items-center gap-1">
+                                        <span className={`text-xs px-2 py-0.5 rounded-full ${
+                                          isActiveStructure 
+                                            ? 'bg-primary text-white' 
+                                            : 'bg-gray-100 text-gray-700'
+                                        }`}>
+                                          {isActiveStructure ? 'Active' : 'Click to activate'}
+                                        </span>
+                                        {isActiveStructure && structureId && structureIndicators[structureId]?.length > 0 && (
+                                          <button
+                                            className="text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded hover:bg-red-200"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              const newStructureIndicators = {...structureIndicators};
+                                              newStructureIndicators[structureId] = [];
+                                              setStructureIndicators(newStructureIndicators);
+                                            }}
+                                            title="Clear all indicators for this structure"
+                                          >
+                                            Clear
+                                          </button>
+                                        )}
+                                      </div>
+                                    )}
                                     <button
                                       className="ml-auto text-gray-400 hover:text-red-500"
                                       onClick={(e) => {
@@ -506,6 +599,19 @@ export default function CreateTournamentPage() {
                                         const newElements = [...flowchartElements];
                                         newElements.splice(index, 1);
                                         setFlowchartElements(newElements);
+                                        
+                                        // If this was a structure, clean up
+                                        if (isStructure && structureId) {
+                                          // If this was the active structure, clear active
+                                          if (activeStructureId === structureId) {
+                                            setActiveStructureId(null);
+                                          }
+                                          
+                                          // Remove structure indicators
+                                          const newStructureIndicators = {...structureIndicators};
+                                          delete newStructureIndicators[structureId];
+                                          setStructureIndicators(newStructureIndicators);
+                                        }
                                       }}
                                     >
                                       ×
@@ -602,6 +708,8 @@ export default function CreateTournamentPage() {
                 <TournamentPreview 
                   options={[...flowchartElements, ...selectedIndicators]} 
                   name={tournamentName || "New Tournament"} 
+                  structureIndicators={structureIndicators}
+                  activeStructureId={activeStructureId}
                 />
               </div>
             )}
