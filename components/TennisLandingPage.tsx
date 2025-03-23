@@ -183,20 +183,22 @@ function TennisLandingPage() {
               Join thousands of players and organizers who are already using our platform.
             </motion.p>
             
-            <motion.button
-              className="bg-primary text-white px-8 py-4 rounded-full font-medium text-lg shadow-lg"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              whileHover={{
-                scale: 1.05,
-                boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                transition: { type: "spring", damping: 30, stiffness: 400 },
-              }}
-            >
-              Get Started Today
-            </motion.button>
+            <Link href="/signup">
+              <motion.button
+                className="bg-primary text-white px-8 py-4 rounded-full font-medium text-lg shadow-lg"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                  transition: { type: "spring", damping: 30, stiffness: 400 },
+                }}
+              >
+                Get Started Today
+              </motion.button>
+            </Link>
           </div>
         </div>
         

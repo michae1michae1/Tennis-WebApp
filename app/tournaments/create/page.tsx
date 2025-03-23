@@ -54,7 +54,7 @@ interface OptionCategory {
 const optionCategories: OptionCategory[] = [
   {
     id: 'format',
-    title: 'Format Indicators',
+    title: 'Tournament Format',
     isIndicator: true, // Mark as indicator category
     options: [
       { id: 'singles', label: 'Singles', icon: '👤', type: 'indicator', category: 'format' },
