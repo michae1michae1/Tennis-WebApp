@@ -4,75 +4,13 @@ import { motion } from "framer-motion"
 import { Activity, Trophy, Calendar, Bell, Users } from "lucide-react"
 import { TennisBallDecoration } from "@/components/ui/tennis-ball"
 import Link from "next/link"
+import { Hero } from "@/components/ui/animated-hero"
 
 function TennisLandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
-      <section className="w-full min-h-screen overflow-hidden flex flex-col items-center justify-center relative pt-16">
-        {/* Tennis-themed gradient background */}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/10 via-background to-secondary/10"></div>
-        
-        {/* Tennis ball decorations */}
-        <div className="absolute inset-0 -z-5 overflow-hidden">
-          <TennisBallDecoration count={5} />
-        </div>
-
-        <div className="flex flex-col justify-center items-center w-full max-w-4xl z-10 px-4 text-center">
-          <motion.h1
-            className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight"
-            animate={{ opacity: 1, y: 0 }}
-            initial={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-          >
-            Elevate Your <span className="text-primary">Tennis</span> Experience
-          </motion.h1>
-          
-          <motion.p
-            className="mt-6 text-lg sm:text-xl md:text-2xl text-gray-600 max-w-2xl"
-            animate={{ opacity: 1, y: 0 }}
-            initial={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
-          >
-            Create, manage, and participate in custom tennis tournaments and ladder systems. 
-            Use popular formats and structures, or create your own!
-          </motion.p>
-
-          <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mt-10">
-            <Link href="/tournaments/create">
-            <motion.button
-              className="bg-primary text-white px-6 py-3 rounded-full font-medium text-lg shadow-lg"
-              animate={{ opacity: 1, y: 0 }}
-              initial={{ opacity: 0, y: 20 }}
-              transition={{ duration: 0.5, ease: "easeOut", delay: 0.4 }}
-              whileHover={{
-                scale: 1.05,
-                boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                transition: { type: "spring", damping: 30, stiffness: 400 },
-              }}
-            >
-              Create Tournament
-            </motion.button>
-            </Link>
-
-            <Link href="/tournaments">
-              <motion.button
-                className="bg-secondary text-text px-6 py-3 rounded-full font-medium text-lg shadow-lg"
-                animate={{ opacity: 1, y: 0 }}
-                initial={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.5, ease: "easeOut", delay: 0.5 }}
-                whileHover={{
-                  scale: 1.05,
-                  boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                  transition: { type: "spring", damping: 30, stiffness: 400 },
-                }}
-              >
-                View Tournaments
-              </motion.button>
-            </Link>
-          </div>
-        </div>
-      </section>
+      <Hero />
 
       {/* Features Section */}
       <section className="py-24 bg-gray-50">
