@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { TennisBallDecoration } from "@/components/ui/tennis-ball";
 
 function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
+  const directionRef = useRef<Record<number, boolean>>({});
+  
   const titles = useMemo(
     () => [
       "Experience", 
@@ -41,6 +43,15 @@ function Hero() {
     []
   );
 
+  // Initialize random directions for each word transition
+  useEffect(() => {
+    titles.forEach((_, index) => {
+      if (directionRef.current[index] === undefined) {
+        directionRef.current[index] = Math.random() > 0.5;
+      }
+    });
+  }, [titles]);
+
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (titleNumber === titles.length - 1) {
@@ -48,7 +59,7 @@ function Hero() {
       } else {
         setTitleNumber(titleNumber + 1);
       }
-    }, 700);
+    }, 800);
     return () => clearTimeout(timeoutId);
   }, [titleNumber, titles]);
 
@@ -74,25 +85,30 @@ function Hero() {
             <span className="ml-2 text-primary">Tennis</span>
           </div>
           <div className="h-20 md:h-24 relative w-full mt-2 overflow-hidden">
-            {titles.map((title, index) => (
-              <motion.div
-                key={index}
-                className="absolute inset-0 flex items-center justify-center"
-                initial={{ opacity: 0, y: 70 }}
-                animate={{
-                  opacity: titleNumber === index ? 1 : 0,
-                  y: titleNumber === index ? 0 : 
-                     titleNumber > index ? -70 : 70
-                }}
-                transition={{ 
-                  type: "spring",
-                  stiffness: 150,
-                  damping: 12
-                }}
-              >
-                {title}
-              </motion.div>
-            ))}
+            {titles.map((title, index) => {
+              const goesUp = directionRef.current[index] || false;
+              return (
+                <motion.div
+                  key={index}
+                  className="absolute inset-0 flex items-center justify-center"
+                  initial={{ opacity: 0, y: goesUp ? 70 : -70 }}
+                  animate={{
+                    opacity: titleNumber === index ? 1 : 0,
+                    y: titleNumber === index ? 0 : 
+                      (titleNumber > index) 
+                        ? (goesUp ? -70 : 70) // Exit direction opposite of entry
+                        : (goesUp ? 70 : -70)  // Entry direction
+                  }}
+                  transition={{ 
+                    type: "spring",
+                    stiffness: 150,
+                    damping: 12
+                  }}
+                >
+                  {title}
+                </motion.div>
+              );
+            })}
           </div>
         </motion.h1>
         
