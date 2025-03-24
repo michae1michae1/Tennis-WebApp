@@ -66,7 +66,7 @@ export default function Navigation() {
           ) : (
             // User is not logged in
             <>
-              <Link href="/login" className="hover:text-secondary transition-colors">
+              <Link href="/login" className="border border-white text-white px-4 py-1 rounded hover:bg-white/10 transition-colors">
                 Login
               </Link>
               <Link href="/signup" className="bg-white text-primary px-4 py-1 rounded hover:bg-secondary hover:text-text transition-colors">
