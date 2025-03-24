@@ -4,7 +4,9 @@ export async function generateStaticParams() {
   return [
     { id: '1' },
     { id: '2' },
-    { id: '3' }
+    { id: '3' },
+    { id: '4' },
+    { id: '5' }
   ];
 }
 
@@ -12,11 +14,11 @@ export default function TournamentDetail({ params }: { params: { id: string } })
   // This would be fetched from an API in a real app
   const tournament = {
     id: params.id,
-    name: params.id === '1' ? 'Summer Classic' : params.id === '2' ? 'Club Championship' : 'Ladder League',
-    description: 'Annual summer tournament with ladder and elimination phases',
-    startDate: '2025-06-01',
-    endDate: '2025-06-15',
-    type: 'custom',
+    name: getTournamentName(params.id),
+    description: getTournamentDescription(params.id),
+    startDate: getTournamentStartDate(params.id),
+    endDate: getTournamentEndDate(params.id),
+    type: getTournamentType(params.id),
     status: 'draft',
     organizer: {
       name: 'Tennis Club Admin',
@@ -39,6 +41,62 @@ export default function TournamentDetail({ params }: { params: { id: string } })
       { id: '4', player1: 'James Taylor', player2: 'Sophia Anderson', date: '2025-06-03', score: 'Not played' },
     ]
   };
+
+  // Helper functions to get tournament data based on ID
+  function getTournamentName(id: string): string {
+    switch(id) {
+      case '1': return 'Summer Classic';
+      case '2': return 'Club Championship';
+      case '3': return 'Ladder League';
+      case '4': return 'Spring Invitational';
+      case '5': return 'Junior Development Series';
+      default: return 'Unknown Tournament';
+    }
+  }
+
+  function getTournamentDescription(id: string): string {
+    switch(id) {
+      case '1': return 'Annual summer tournament with ladder and elimination phases';
+      case '2': return 'Official club championship with round-robin format';
+      case '3': return 'Ongoing ladder tournament for club members';
+      case '4': return 'Special invitation tournament for top ranked players';
+      case '5': return 'Tournament series for junior players under 18';
+      default: return 'Tournament details not available';
+    }
+  }
+
+  function getTournamentStartDate(id: string): string {
+    switch(id) {
+      case '1': return '2025-05-30';
+      case '2': return '2025-06-15';
+      case '3': return '2025-05-01';
+      case '4': return '2025-05-18';
+      case '5': return '2025-06-05';
+      default: return 'Date not available';
+    }
+  }
+
+  function getTournamentEndDate(id: string): string {
+    switch(id) {
+      case '1': return '2025-06-09';
+      case '2': return '2025-06-25';
+      case '3': return '2025-07-31';
+      case '4': return '2025-05-20';
+      case '5': return '2025-06-07';
+      default: return 'Date not available';
+    }
+  }
+
+  function getTournamentType(id: string): string {
+    switch(id) {
+      case '1': return 'custom';
+      case '2': return 'roundRobin';
+      case '3': return 'ladder';
+      case '4': return 'singleElimination';
+      case '5': return 'roundRobin';
+      default: return 'unknown';
+    }
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { LogOut } from 'lucide-react';
 
 export default function Navigation() {
   const [user, setUser] = useState<any>(null);
@@ -58,8 +59,9 @@ export default function Navigation() {
               </span>
               <button 
                 onClick={handleLogout}
-                className="hover:text-secondary transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-white/10 border border-white/20 hover:bg-white/20 transition-colors text-sm"
               >
+                <LogOut size={14} />
                 Logout
               </button>
             </div>
