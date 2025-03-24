@@ -6,7 +6,38 @@ import { TennisBallDecoration } from "@/components/ui/tennis-ball";
 function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(
-    () => ["Experience", "Community", "Events", "Games", "Journey"],
+    () => [
+      "Experience", 
+      "Community", 
+      "Events", 
+      "Ability", 
+      "Journey",
+      "Game",
+      "Skills",
+      "Performance",
+      "Potential",
+      "Technique",
+      "Strategy",
+      "Confidence",
+      "Ranking",
+      "Serve",
+      "Volley",
+      "Footwork",
+      "Precision",
+      "Passion",
+      "Matches",
+      "Competition",
+      "Career",
+      "Network",
+      "Training",
+      "Coordination",
+      "Reflexes",
+      "Endurance",
+      "Focus",
+      "Challenge",
+      "Victories",
+      "Championship"
+    ],
     []
   );
 
@@ -17,7 +48,7 @@ function Hero() {
       } else {
         setTitleNumber(titleNumber + 1);
       }
-    }, 2500);
+    }, 700);
     return () => clearTimeout(timeoutId);
   }, [titleNumber, titles]);
 
@@ -33,38 +64,35 @@ function Hero() {
       
       <div className="flex flex-col justify-center items-center w-full max-w-4xl z-10 px-4 text-center">
         <motion.h1
-          className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight flex flex-wrap justify-center"
+          className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight"
           animate={{ opacity: 1, y: 0 }}
           initial={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          <span>Elevate Your</span>{" "} 
-          <span className="text-primary">Tennis</span>{" "}
-          <div className="relative flex justify-center overflow-hidden h-[1.5em] w-full mt-1 md:mt-0 md:w-auto md:inline-flex">
-            <div className="relative px-6">
-              {titles.map((title, index) => (
-                <motion.span
-                  key={index}
-                  className="absolute left-0 right-0 font-bold whitespace-nowrap flex justify-center"
-                  initial={{ opacity: 0, y: "100%" }}
-                  transition={{ type: "spring", stiffness: 50 }}
-                  animate={
-                    titleNumber === index
-                      ? {
-                          y: 0,
-                          opacity: 1,
-                        }
-                      : {
-                          y: titleNumber > index ? -100 : 100,
-                          opacity: 0,
-                        }
-                  }
-                >
-                  {title}
-                </motion.span>
-              ))}
-              <span className="opacity-0 whitespace-nowrap">{titles.reduce((a, b) => a.length > b.length ? a : b)}</span>
-            </div>
+          <div className="flex flex-wrap justify-center">
+            <span>Elevate Your</span>
+            <span className="ml-2 text-primary">Tennis</span>
+          </div>
+          <div className="h-20 md:h-24 relative w-full mt-2 overflow-hidden">
+            {titles.map((title, index) => (
+              <motion.div
+                key={index}
+                className="absolute inset-0 flex items-center justify-center"
+                initial={{ opacity: 0, y: 70 }}
+                animate={{
+                  opacity: titleNumber === index ? 1 : 0,
+                  y: titleNumber === index ? 0 : 
+                     titleNumber > index ? -70 : 70
+                }}
+                transition={{ 
+                  type: "spring",
+                  stiffness: 150,
+                  damping: 12
+                }}
+              >
+                {title}
+              </motion.div>
+            ))}
           </div>
         </motion.h1>
         
