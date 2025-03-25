@@ -16,8 +16,6 @@ export type MatchScore = {
   defaulted?: boolean;
 };
 
-type TournamentFormat = 'best-of-3' | 'best-of-5';
-
 type ReportScoreFormProps = {
   matchId: string;
   player1: string;
@@ -35,9 +33,10 @@ export default function ReportScoreForm({
   onClose,
   onSubmit
 }: ReportScoreFormProps) {
-  // Calculate format based on tournament type
-  const format: TournamentFormat = tournamentType === 'singleElimination' ? 'best-of-3' : 'best-of-3';
-  const maxSets = format === 'best-of-5' ? 5 : 3;
+  // Determine format based on tournament type
+  const isBestOfFive = false; // Default to best of 3 for now
+  const maxSets = isBestOfFive ? 5 : 3;
+  const formatLabel = isBestOfFive ? 'Best of 5 sets' : 'Best of 3 sets';
 
   // State for sets score
   const [sets, setSets] = useState<ScoreSet[]>([
@@ -63,7 +62,7 @@ export default function ReportScoreForm({
       parseInt(set.player1Score) < parseInt(set.player2Score)
     ).length;
     
-    const targetSets = maxSets === 5 ? 3 : 2;
+    const targetSets = isBestOfFive ? 3 : 2;
     
     if (player1Sets >= targetSets) return 'player1';
     if (player2Sets >= targetSets) return 'player2';
@@ -73,7 +72,8 @@ export default function ReportScoreForm({
   
   // Calculate if third set is needed
   const isThirdSetNeeded = (): boolean => {
-    if (format === 'best-of-5') return true;
+    // Always need 3rd set in best of 5
+    if (isBestOfFive) return true;
     
     const player1Sets = sets.slice(0, 2).filter(set => 
       set.player1Score !== '' && 
@@ -90,7 +90,7 @@ export default function ReportScoreForm({
     // If either player has won 2 sets already, third set is not needed
     return !(player1Sets === 2 || player2Sets === 2);
   };
-
+  
   // Update the set score
   const updateSetScore = (index: number, player: 'player1' | 'player2', value: string) => {
     // Only allow numbers 0-7
@@ -172,7 +172,7 @@ export default function ReportScoreForm({
               <span className="font-medium">{player2}</span>
             </div>
             <div className="text-sm text-gray-500 text-center">
-              Format: {format === 'best-of-5' ? 'Best of 5 sets' : 'Best of 3 sets'}
+              Format: {formatLabel}
             </div>
           </div>
         </div>

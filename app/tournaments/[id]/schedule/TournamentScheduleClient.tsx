@@ -201,7 +201,9 @@ export default function TournamentScheduleClient({ tournament }: { tournament: T
                         {match.score}
                       </span>
                       {match.score === 'Not played' && (
-                        <button className="btn btn-secondary btn-sm">Report Score</button>
+                        <Link href={`/tournaments/${tournament.id}/report`} className="btn btn-secondary btn-sm">
+                          Report Score
+                        </Link>
                       )}
                     </div>
                   </div>

@@ -132,7 +132,7 @@ export default function TournamentDetail({ params }: { params: { id: string } })
               <button className="btn btn-primary w-full">Register</button>
               <button className="btn btn-outline w-full">View Bracket</button>
               <Link href={`/tournaments/${params.id}/schedule`} className="btn btn-outline w-full text-center flex justify-center items-center">View Schedule</Link>
-              <button className="btn btn-outline w-full">Report Match</button>
+              <Link href={`/tournaments/${params.id}/report`} className="btn btn-outline w-full text-center flex justify-center items-center">Report Match</Link>
             </div>
           </div>
 
