@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
+import { UserIcon } from '@heroicons/react/24/outline';
 
 export default function PlayersPage() {
   // This is mock data that would typically come from an API
@@ -18,47 +19,47 @@ export default function PlayersPage() {
     },
     {
       id: '2',
-      name: 'Emma Johnson',
+      name: 'Sarah Davis',
       profileImage: '/images/avatars/avatar2.svg',
-      skill: 4.3,
-      wins: 22,
-      losses: 10,
+      skill: 4.0,
+      wins: 18,
+      losses: 12,
       rank: 2
     },
     {
       id: '3',
       name: 'Michael Brown',
       profileImage: '/images/avatars/avatar3.svg',
-      skill: 4.1,
-      wins: 20,
-      losses: 12,
+      skill: 3.5,
+      wins: 15,
+      losses: 15,
       rank: 3
     },
     {
       id: '4',
-      name: 'Sarah Davis',
+      name: 'Emma Johnson',
       profileImage: '/images/avatars/avatar4.svg',
-      skill: 3.9,
-      wins: 18,
-      losses: 14,
+      skill: 4.0,
+      wins: 20,
+      losses: 10,
       rank: 4
     },
     {
       id: '5',
       name: 'David Wilson',
       profileImage: '/images/avatars/avatar5.svg',
-      skill: 3.8,
-      wins: 16,
-      losses: 16,
+      skill: 3.0,
+      wins: 12,
+      losses: 18,
       rank: 5
     },
     {
       id: '6',
       name: 'Olivia Martinez',
       profileImage: '/images/avatars/avatar6.svg',
-      skill: 3.7,
-      wins: 15,
-      losses: 17,
+      skill: 3.5,
+      wins: 16,
+      losses: 14,
       rank: 6
     }
   ];
@@ -119,15 +120,15 @@ export default function PlayersPage() {
                     <div className="flex items-center">
                       <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 overflow-hidden">
                         {player.profileImage ? (
-                          <Image
-                            src={player.profileImage}
-                            alt={player.name}
-                            width={40}
-                            height={40}
-                            className="object-cover"
+                          <img
+                            src={`${process.env.NODE_ENV === 'production' ? '/Tennis-WebApp' : ''}${player.profileImage}`}
+                            alt={`${player.name}'s avatar`}
+                            className="h-10 w-10 rounded-full"
                           />
                         ) : (
-                          player.name.charAt(0)
+                          <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                            <UserIcon className="h-6 w-6 text-gray-500" />
+                          </div>
                         )}
                       </div>
                       <div className="ml-4">

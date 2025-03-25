@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { UserIcon } from '@heroicons/react/24/outline';
 
 type Player = {
   id: string;
@@ -204,7 +205,7 @@ export default function PlayerProfile({ params }: { params: { id: string } }) {
     '6': {
       id: '6',
       name: 'Olivia Martinez',
-      profileImage: '/images/avatars/avatar6.svg',
+      profileImage: './images/avatars/avatar6.svg',
       skill: 3.7,
       wins: 15,
       losses: 17,
@@ -240,16 +241,15 @@ export default function PlayerProfile({ params }: { params: { id: string } }) {
           <div className="flex flex-col md:flex-row items-center gap-6">
             <div className="h-32 w-32 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 overflow-hidden">
               {playerData.profileImage ? (
-                <div className="relative h-full w-full">
-                  <Image
-                    src={playerData.profileImage}
-                    alt={playerData.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
+                <img
+                  src={`${process.env.NODE_ENV === 'production' ? '/Tennis-WebApp' : ''}${playerData.profileImage}`}
+                  alt={`${playerData.name}'s profile`}
+                  className="h-32 w-32 rounded-full object-cover"
+                />
               ) : (
-                playerData.name.charAt(0)
+                <div className="h-32 w-32 rounded-full bg-gray-200 flex items-center justify-center">
+                  <UserIcon className="h-16 w-16 text-gray-500" />
+                </div>
               )}
             </div>
             <div className="text-center md:text-left">
