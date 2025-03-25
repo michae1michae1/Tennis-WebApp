@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { format, parseISO, isEqual } from 'date-fns';
 import { ChevronLeft, Plus } from 'lucide-react';
 import ScheduleMatchForm, { ScheduleMatchData } from './ScheduleMatchForm';
+import ReportScoreForm, { MatchScore } from '../report/ReportScoreForm';
 import { useSearchParams } from 'next/navigation';
 
 type Match = {
@@ -38,6 +39,11 @@ export default function TournamentScheduleClient({ tournament }: { tournament: T
   // State for scheduling form
   const [isScheduling, setIsScheduling] = useState(false);
   const [schedulingPreset, setSchedulingPreset] = useState<{ player1?: string; player2?: string }>({});
+  
+  // State for score reporting
+  const [reportingScore, setReportingScore] = useState(false);
+  const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   
   // Handle URL params for scheduling
   useEffect(() => {
@@ -115,6 +121,56 @@ export default function TournamentScheduleClient({ tournament }: { tournament: T
     setIsScheduling(true);
   };
 
+  // Handle reporting a score
+  const handleReportScore = (match: Match) => {
+    setSelectedMatch(match);
+    setReportingScore(true);
+  };
+  
+  // Handle submission of score
+  const handleScoreSubmit = (score: MatchScore) => {
+    if (!selectedMatch) return;
+    
+    // In a real app, this would make an API call
+    // Format the score for display
+    let scoreString = score.sets.map(set => {
+      let setScore = `${set.player1Score}-${set.player2Score}`;
+      if (set.tiebreak) {
+        setScore += ` (${set.tiebreak})`;
+      }
+      return setScore;
+    }).join(', ');
+    
+    // Add retired/defaulted info if applicable
+    if (score.retired) {
+      scoreString += ' (retired)';
+    } else if (score.defaulted) {
+      scoreString += ' (defaulted)';
+    }
+    
+    // Update the match in local state
+    const updatedMatches = localMatches.map(m => {
+      if (m.id === selectedMatch.id) {
+        return {
+          ...m,
+          score: scoreString
+        };
+      }
+      return m;
+    });
+    
+    setLocalMatches(updatedMatches);
+    setReportingScore(false);
+    
+    // Show success message
+    setSuccessMessage(`Score reported successfully for ${selectedMatch.player1} vs ${selectedMatch.player2}`);
+    
+    // Clear message after 3 seconds
+    setTimeout(() => {
+      setSuccessMessage(null);
+    }, 3000);
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
       <div className="mb-6 flex items-center justify-between">
@@ -127,6 +183,12 @@ export default function TournamentScheduleClient({ tournament }: { tournament: T
           Back to Tournament
         </Link>
       </div>
+      
+      {successMessage && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+          {successMessage}
+        </div>
+      )}
       
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Calendar sidebar */}
@@ -212,9 +274,12 @@ export default function TournamentScheduleClient({ tournament }: { tournament: T
                         {match.score}
                       </span>
                       {match.score === 'Not played' && (
-                        <Link href={`/tournaments/${tournament.id}/report`} className="btn btn-secondary btn-sm">
+                        <button 
+                          onClick={() => handleReportScore(match)} 
+                          className="btn btn-secondary btn-sm"
+                        >
                           Report Score
-                        </Link>
+                        </button>
                       )}
                     </div>
                   </div>
@@ -243,6 +308,18 @@ export default function TournamentScheduleClient({ tournament }: { tournament: T
           player2={schedulingPreset.player2}
           onClose={() => setIsScheduling(false)}
           onSchedule={handleScheduleMatch}
+        />
+      )}
+
+      {/* Score Reporting Modal */}
+      {reportingScore && selectedMatch && (
+        <ReportScoreForm
+          matchId={selectedMatch.id}
+          player1={selectedMatch.player1}
+          player2={selectedMatch.player2}
+          tournamentType={tournament.id} // Using tournament ID as type, replace with actual type if available
+          onClose={() => setReportingScore(false)}
+          onSubmit={handleScoreSubmit}
         />
       )}
     </div>

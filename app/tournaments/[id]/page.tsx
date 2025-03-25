@@ -13,7 +13,7 @@ export async function generateStaticParams() {
 import Link from 'next/link';
 import { getTournamentType, getTournamentFormats, getTournamentTypeDisplay } from '@/app/utils/tournamentUtils';
 import RegistrationButton from '@/app/components/RegistrationButton';
-import { Calendar, Trophy, FileText } from 'lucide-react';
+import { Calendar, Trophy, FileText, ChevronLeft } from 'lucide-react';
 
 export default function TournamentDetail({ params }: { params: { id: string } }) {
   // This would be fetched from an API in a real app
@@ -99,8 +99,14 @@ export default function TournamentDetail({ params }: { params: { id: string } })
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-primary">{tournament.name}</h1>
+        <div className="flex items-center justify-between mb-4">
+          <div className="space-y-1">
+            <Link href="/tournaments" className="text-primary hover:text-primary-dark flex items-center gap-1 mb-2">
+              <ChevronLeft className="h-4 w-4" />
+              Back to Tournaments
+            </Link>
+            <h1 className="text-primary">{tournament.name}</h1>
+          </div>
           <div className="flex flex-wrap gap-2">
             {isCustomType ? (
               <>
@@ -138,7 +144,7 @@ export default function TournamentDetail({ params }: { params: { id: string } })
         {/* Left sidebar */}
         <div className="lg:col-span-1">
           <div className="card mb-6">
-            <h3 className="text-primary mb-4">Tournament Options</h3>
+            <h3 className="text-primary mb-4 text-center">Tournament Options</h3>
             <div className="space-y-2">
               <RegistrationButton tournamentId={params.id} />
               <Link href={`/tournaments/${params.id}/bracket`} className="btn btn-outline w-full text-center flex justify-center items-center gap-2">
