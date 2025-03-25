@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Trophy, Calendar, Users } from 'lucide-react';
 import Link from 'next/link';
+import { useAuth } from '../context/AuthContext';
 
 export default function SignupPage() {
   const [name, setName] = useState('');
@@ -14,6 +15,7 @@ export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+  const { register } = useAuth();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -33,47 +35,18 @@ export default function SignupPage() {
     setError('');
 
     try {
-      // Demo: Check if email is already registered (in localStorage)
-      const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
-      const userExists = existingUsers.some((user: any) => user.email === email);
+      const success = await register(name, email, password);
       
-      if (userExists) {
-        setError('Email already registered');
-        setIsLoading(false);
-        return;
-      }
-      
-      // Create a new user object
-      const newUser = {
-        id: Math.random().toString(36).substring(2, 15),
-        name,
-        email,
-        password, // Note: In a real app, NEVER store passwords in plaintext
-        role: 'player',
-        createdAt: new Date().toISOString()
-      };
-      
-      // Add user to localStorage
-      existingUsers.push(newUser);
-      localStorage.setItem('users', JSON.stringify(existingUsers));
-      
-      // Set the current user as logged in
-      localStorage.setItem('currentUser', JSON.stringify({
-        id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
-        role: newUser.role
-      }));
-      
-      // Simulate network delay for demo
-      setTimeout(() => {
+      if (success) {
         // Navigate to home page after successful signup
         router.push('/');
-      }, 1000);
-      
+      } else {
+        setError('Email already registered');
+      }
     } catch (err) {
       setError('An error occurred. Please try again.');
       console.error(err);
+    } finally {
       setIsLoading(false);
     }
   };

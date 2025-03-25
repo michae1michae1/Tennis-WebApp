@@ -1,7 +1,10 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import Navigation from '@/components/Navigation'
+import './globals.css'
+import Navbar from './components/Navbar'
+import Footer from './components/Footer'
+import { AuthProvider } from './context/AuthContext'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -11,7 +14,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: 'Tennis Tournament App',
-  description: 'Create, manage, and participate in custom tennis tournaments',
+  description: 'Organize and manage tennis tournaments',
 }
 
 export default function RootLayout({
@@ -22,17 +25,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body>
-        <div className="min-h-screen flex flex-col">
-          <Navigation />
-          <main className="flex-grow">
+        <AuthProvider>
+          <Navbar />
+          <main className="min-h-screen bg-background">
             {children}
           </main>
-          <footer className="bg-primary text-white py-6">
-            <div className="container mx-auto px-4 text-center">
-              <p>© {new Date().getFullYear()} Tennis Tournament App. All rights reserved.</p>
-            </div>
-          </footer>
-        </div>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   )

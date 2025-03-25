@@ -12,6 +12,8 @@ export async function generateStaticParams() {
 
 import Link from 'next/link';
 import { getTournamentType, getTournamentFormats, getTournamentTypeDisplay } from '@/app/utils/tournamentUtils';
+import RegistrationButton from '@/app/components/RegistrationButton';
+import { Calendar, Trophy, FileText } from 'lucide-react';
 
 export default function TournamentDetail({ params }: { params: { id: string } }) {
   // This would be fetched from an API in a real app
@@ -138,8 +140,9 @@ export default function TournamentDetail({ params }: { params: { id: string } })
           <div className="card mb-6">
             <h3 className="text-primary mb-4">Tournament Options</h3>
             <div className="space-y-2">
-              <button className="btn btn-primary w-full">Register</button>
-              <Link href={`/tournaments/${params.id}/bracket`} className="btn btn-outline w-full text-center flex justify-center items-center">
+              <RegistrationButton tournamentId={params.id} />
+              <Link href={`/tournaments/${params.id}/bracket`} className="btn btn-outline w-full text-center flex justify-center items-center gap-2">
+                <Trophy size={18} />
                 View {isCustomType 
                   ? (formats.includes('ladder') ? 'Ladder & Bracket' : 'Bracket')
                   : tournamentType === 'ladder' ? 'Ladder' : 
@@ -149,8 +152,14 @@ export default function TournamentDetail({ params }: { params: { id: string } })
                     tournamentType === 'swiss' ? 'Swiss System' :
                     tournamentType === 'groupStage' ? 'Group Stage' : 'Bracket'}
               </Link>
-              <Link href={`/tournaments/${params.id}/schedule`} className="btn btn-outline w-full text-center flex justify-center items-center">View Schedule</Link>
-              <Link href={`/tournaments/${params.id}/report`} className="btn btn-outline w-full text-center flex justify-center items-center">Report Match</Link>
+              <Link href={`/tournaments/${params.id}/schedule`} className="btn btn-outline w-full text-center flex justify-center items-center gap-2">
+                <Calendar size={18} />
+                View Schedule
+              </Link>
+              <Link href={`/tournaments/${params.id}/report`} className="btn btn-outline w-full text-center flex justify-center items-center gap-2">
+                <FileText size={18} />
+                Report Match
+              </Link>
             </div>
           </div>
 

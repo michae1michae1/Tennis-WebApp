@@ -1,15 +1,26 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [redirectPath, setRedirectPath] = useState('');
   const router = useRouter();
+  const { login } = useAuth();
+
+  useEffect(() => {
+    // Check if there's a redirect path in localStorage
+    const storedRedirect = localStorage.getItem('redirectAfterLogin');
+    if (storedRedirect) {
+      setRedirectPath(storedRedirect);
+    }
+  }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -17,34 +28,22 @@ export default function LoginPage() {
     setError('');
 
     try {
-      // Demo: Get users from localStorage
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const success = await login(email, password);
       
-      // Find user with matching email
-      const user = users.find((u: any) => u.email === email);
-      
-      // Check if user exists and password matches
-      if (user && user.password === password) {
-        // Store current user in localStorage (excluding password)
-        localStorage.setItem('currentUser', JSON.stringify({
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role
-        }));
+      if (success) {
+        // Clear the stored redirect path
+        const redirectTo = redirectPath || '/';
+        localStorage.removeItem('redirectAfterLogin');
         
-        // Simulate network delay for demo
-        setTimeout(() => {
-          // Redirect to home page
-          router.push('/');
-        }, 800);
+        // Redirect to stored path or home page
+        router.push(redirectTo);
       } else {
         setError('Invalid email or password');
-        setIsLoading(false);
       }
     } catch (err) {
       setError('An error occurred. Please try again.');
       console.error(err);
+    } finally {
       setIsLoading(false);
     }
   };
