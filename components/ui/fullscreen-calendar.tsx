@@ -470,7 +470,7 @@ export function FullScreenCalendar({ data, onEventClick, onSearch }: FullScreenC
                     "text-muted-foreground",
                   (isEqual(day, selectedDay) || isToday(day)) &&
                     "font-semibold",
-                  "flex h-14 flex-col border-b border-r px-3 py-2 hover:bg-muted focus:z-10",
+                  "flex h-14 flex-col border-b border-r px-3 py-2 hover:bg-muted focus:z-10 relative",
                 )}
               >
                 <time
@@ -490,23 +490,50 @@ export function FullScreenCalendar({ data, onEventClick, onSearch }: FullScreenC
                   {format(day, "d")}
                 </time>
                 {data.filter((date) => isSameDay(date.day, day)).length > 0 && (
-                  <div>
-                    {data
-                      .filter((date) => isSameDay(date.day, day))
-                      .map((date) => (
-                        <div
-                          key={date.day.toString()}
-                          className="-mx-0.5 mt-auto flex flex-wrap-reverse"
+                  <>
+                    {/* Event count badge for mobile */}
+                    {(() => {
+                      const eventCount = data
+                        .filter(date => isSameDay(date.day, day))
+                        .reduce((count, date) => count + date.events.length, 0);
+                      return (
+                        <div 
+                          className={cn(
+                            "absolute bottom-1 left-1 flex items-center justify-center rounded-full text-xs",
+                            isEqual(day, selectedDay)
+                              ? "bg-white text-primary" 
+                              : "bg-primary text-white"
+                          )}
+                          style={{ 
+                            minWidth: '1.25rem', 
+                            height: '1.25rem',
+                            padding: '0 0.25rem'
+                          }}
                         >
-                          {date.events.map((event) => (
-                            <span
-                              key={event.id}
-                              className="mx-0.5 mt-1 h-1.5 w-1.5 rounded-full bg-muted-foreground"
-                            />
-                          ))}
+                          {eventCount}
                         </div>
-                      ))}
-                  </div>
+                      );
+                    })()}
+                    
+                    {/* Keep the dots for visual reference */}
+                    <div>
+                      {data
+                        .filter((date) => isSameDay(date.day, day))
+                        .map((date) => (
+                          <div
+                            key={date.day.toString()}
+                            className="-mx-0.5 mt-auto flex flex-wrap-reverse"
+                          >
+                            {date.events.map((event) => (
+                              <span
+                                key={event.id}
+                                className="mx-0.5 mt-1 h-1.5 w-1.5 rounded-full bg-muted-foreground"
+                              />
+                            ))}
+                          </div>
+                        ))}
+                    </div>
+                  </>
                 )}
               </button>
             ))}
