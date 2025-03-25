@@ -90,7 +90,7 @@ export default function PlayersPage() {
               </svg>
             </div>
           </div>
-          <button className="btn btn-primary">Add Player</button>
+          <Link href="/players/add" className="btn btn-primary">Add Player</Link>
         </div>
       </div>
 

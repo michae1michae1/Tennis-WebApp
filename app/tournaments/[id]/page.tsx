@@ -10,6 +10,8 @@ export async function generateStaticParams() {
   ];
 }
 
+import Link from 'next/link';
+
 export default function TournamentDetail({ params }: { params: { id: string } }) {
   // This would be fetched from an API in a real app
   const tournament = {
@@ -129,7 +131,7 @@ export default function TournamentDetail({ params }: { params: { id: string } })
             <div className="space-y-2">
               <button className="btn btn-primary w-full">Register</button>
               <button className="btn btn-outline w-full">View Bracket</button>
-              <button className="btn btn-outline w-full">View Schedule</button>
+              <Link href={`/tournaments/${params.id}/schedule`} className="btn btn-outline w-full text-center flex justify-center items-center">View Schedule</Link>
               <button className="btn btn-outline w-full">Report Match</button>
             </div>
           </div>
@@ -163,7 +165,7 @@ export default function TournamentDetail({ params }: { params: { id: string } })
                       {match.score}
                     </span>
                     {match.score === 'Not played' && (
-                      <button className="btn btn-secondary btn-sm">Schedule</button>
+                      <Link href={`/tournaments/${params.id}/schedule`} className="btn btn-secondary btn-sm">Schedule</Link>
                     )}
                   </div>
                 </div>
