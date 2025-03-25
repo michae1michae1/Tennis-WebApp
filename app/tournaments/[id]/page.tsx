@@ -165,7 +165,12 @@ export default function TournamentDetail({ params }: { params: { id: string } })
                       {match.score}
                     </span>
                     {match.score === 'Not played' && (
-                      <Link href={`/tournaments/${params.id}/schedule`} className="btn btn-secondary btn-sm">Schedule</Link>
+                      <Link 
+                        href={`/tournaments/${params.id}/schedule?player1=${encodeURIComponent(match.player1)}&player2=${encodeURIComponent(match.player2)}`} 
+                        className="btn btn-secondary btn-sm"
+                      >
+                        Schedule
+                      </Link>
                     )}
                   </div>
                 </div>
