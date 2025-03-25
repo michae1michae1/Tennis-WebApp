@@ -102,41 +102,94 @@ export const TennisBallDecoration: React.FC<{
 }> = ({ className, count = 5 }) => {
   return (
     <div className={cn("relative w-full h-full", className)}>
+      {/* First ball - top left */}
       <TennisBall 
         size={120} 
+        className="hidden md:block"
         position={{ top: "15%", left: "5%" }}
         rotationSpeed={25}
-        initialRotation={0} // Different starting rotation for each ball
+        initialRotation={0}
       />
       <TennisBall 
+        size={80} 
+        className="md:hidden"
+        position={{ top: "10%", left: "2%" }}
+        rotationSpeed={25}
+        initialRotation={0}
+      />
+
+      {/* Second ball - top right */}
+      <TennisBall 
         size={155} 
+        className="hidden md:block"
         position={{ top: "10%", right: "8%" }}
         rotationSpeed={35}
-        initialRotation={72} // 72 degrees (1/5 of 360)
+        initialRotation={72}
         shadow
       />
       <TennisBall 
+        size={95} 
+        className="md:hidden"
+        position={{ top: "8%", right: "5%" }}
+        rotationSpeed={35}
+        initialRotation={72}
+        shadow
+      />
+
+      {/* Third ball - bottom left */}
+      <TennisBall 
         size={175} 
+        className="hidden md:block"
         position={{ bottom: "22%", left: "10%" }}
         rotationSpeed={30}
-        initialRotation={144} // 144 degrees (2/5 of 360)
+        initialRotation={144}
       />
+      <TennisBall 
+        size={105} 
+        className="md:hidden"
+        position={{ bottom: "15%", left: "8%" }}
+        rotationSpeed={30}
+        initialRotation={144}
+      />
+
       {count > 3 && (
-        <TennisBall 
-          size={145} 
-          position={{ bottom: "30%", right: "12%" }}
-          rotationSpeed={40}
-          initialRotation={216} // 216 degrees (3/5 of 360)
-          shadow
-        />
+        <>
+          <TennisBall 
+            size={145} 
+            className="hidden md:block"
+            position={{ bottom: "30%", right: "12%" }}
+            rotationSpeed={40}
+            initialRotation={216}
+            shadow
+          />
+          <TennisBall 
+            size={85} 
+            className="md:hidden"
+            position={{ bottom: "25%", right: "10%" }}
+            rotationSpeed={40}
+            initialRotation={216}
+            shadow
+          />
+        </>
       )}
+
       {count > 4 && (
-        <TennisBall 
-          size={95} 
-          position={{ top: "40%", left: "30%" }}
-          rotationSpeed={20}
-          initialRotation={288} // 288 degrees (4/5 of 360)
-        />
+        <>
+          <TennisBall 
+            size={95} 
+            className="hidden md:block"
+            position={{ top: "40%", left: "30%" }}
+            rotationSpeed={20}
+            initialRotation={288}
+          />
+          <TennisBall 
+            size={65} 
+            className="md:hidden"
+            position={{ top: "35%", left: "25%" }}
+            rotationSpeed={20}
+            initialRotation={288}
+          />
+        </>
       )}
     </div>
   );
