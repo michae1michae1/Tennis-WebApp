@@ -57,7 +57,7 @@ function Hero() {
   }, [titleNumber, titles]);
 
   return (
-    <section className="w-full min-h-screen overflow-hidden flex flex-col items-center justify-center relative pt-16">
+    <section className="w-full min-h-screen overflow-hidden flex flex-col items-center justify-center relative pt-8 md:pt-16">
       {/* Tennis-themed gradient background */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/10 via-background to-secondary/10"></div>
       
@@ -66,7 +66,7 @@ function Hero() {
         <TennisBallDecoration count={5} />
       </div>
       
-      <div className="flex flex-col justify-center items-center w-full max-w-4xl z-10 px-4 text-center">
+      <div className="flex flex-col justify-center items-center w-full max-w-4xl z-10 px-4 text-center mt-0 md:mt-8">
         <motion.h1
           className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight"
           animate={{ opacity: 1, y: 0 }}
@@ -77,7 +77,7 @@ function Hero() {
             <span>Elevate Your</span>
             <span className="ml-2 text-primary">Tennis</span>
           </div>
-          <div className="h-20 md:h-24 relative w-full mt-2 overflow-hidden">
+          <div className="h-16 sm:h-20 md:h-24 relative w-full mt-2 overflow-hidden">
             {titles.map((title, index) => {
               const goesUp = directionRef.current[index] || false;
               return (
@@ -106,7 +106,7 @@ function Hero() {
         </motion.h1>
         
         <motion.p
-          className="mt-6 text-lg sm:text-xl md:text-2xl text-gray-600 max-w-2xl"
+          className="mt-4 md:mt-6 text-lg sm:text-xl md:text-2xl text-gray-600 max-w-2xl"
           animate={{ opacity: 1, y: 0 }}
           initial={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
@@ -115,10 +115,10 @@ function Hero() {
           Use popular formats and structures, or create your own!
         </motion.p>
 
-        <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mt-10">
+        <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4 mt-6 md:mt-10">
           <Link href="/tournaments/create">
             <motion.button
-              className="bg-primary text-white px-6 py-3 rounded-full font-medium text-lg shadow-lg"
+              className="bg-primary text-white px-6 py-3 rounded-full font-medium text-lg shadow-lg w-full sm:w-auto"
               animate={{ opacity: 1, y: 0 }}
               initial={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.5, ease: "easeOut", delay: 0.4 }}
@@ -134,7 +134,7 @@ function Hero() {
 
           <Link href="/tournaments">
             <motion.button
-              className="bg-secondary text-text px-6 py-3 rounded-full font-medium text-lg shadow-lg"
+              className="bg-secondary text-text px-6 py-3 rounded-full font-medium text-lg shadow-lg w-full sm:w-auto"
               animate={{ opacity: 1, y: 0 }}
               initial={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.5, ease: "easeOut", delay: 0.5 }}

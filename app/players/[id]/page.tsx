@@ -10,6 +10,7 @@ type Player = {
   wins: number;
   losses: number;
   rank: number;
+  tournaments: number;
   bio?: string;
   location?: string;
   joinedDate?: string;
@@ -58,6 +59,7 @@ export default function PlayerProfile({ params }: { params: { id: string } }) {
       wins: 24,
       losses: 8,
       rank: 1,
+      tournaments: 12,
       bio: 'Professional tennis player with 10 years of experience. Known for powerful serves and aggressive baseline play.',
       location: 'New York, NY',
       joinedDate: 'January 2022',
@@ -113,6 +115,7 @@ export default function PlayerProfile({ params }: { params: { id: string } }) {
       wins: 22,
       losses: 10,
       rank: 2,
+      tournaments: 9,
       bio: 'Former college champion with a tactical approach to the game. Known for consistency and mental toughness.',
       location: 'Boston, MA',
       joinedDate: 'February 2022',
@@ -154,6 +157,7 @@ export default function PlayerProfile({ params }: { params: { id: string } }) {
       wins: 20,
       losses: 12,
       rank: 3,
+      tournaments: 8,
       bio: 'Powerful player with a dominant serve. Looking to improve consistency in longer rallies.',
       location: 'Chicago, IL',
       joinedDate: 'March 2022',
@@ -179,6 +183,7 @@ export default function PlayerProfile({ params }: { params: { id: string } }) {
       wins: 18,
       losses: 14,
       rank: 4,
+      tournaments: 10,
       bio: 'Technical player with excellent footwork. Specializes in clay court tactics.',
       location: 'Miami, FL',
       joinedDate: 'April 2022',
@@ -195,6 +200,7 @@ export default function PlayerProfile({ params }: { params: { id: string } }) {
       wins: 16,
       losses: 16,
       rank: 5,
+      tournaments: 6,
       bio: 'Rising talent with a powerful forehand. Working on improving consistency.',
       location: 'Los Angeles, CA',
       joinedDate: 'January 2023',
@@ -210,6 +216,7 @@ export default function PlayerProfile({ params }: { params: { id: string } }) {
       wins: 15,
       losses: 17,
       rank: 6,
+      tournaments: 7,
       bio: 'Former junior champion making a comeback after injury. Known for creative shot selection.',
       location: 'Denver, CO',
       joinedDate: 'May 2022',
@@ -359,6 +366,10 @@ export default function PlayerProfile({ params }: { params: { id: string } }) {
                 <div className="bg-white p-4 rounded-lg shadow-sm text-center">
                   <p className="text-gray-500 text-sm">Win Rate</p>
                   <p className="text-3xl font-bold text-accent">{winPercentage}%</p>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-sm text-center col-span-2">
+                  <p className="text-gray-500 text-sm">Tournaments Played</p>
+                  <p className="text-3xl font-bold text-primary">{playerData.tournaments}</p>
                 </div>
               </div>
 

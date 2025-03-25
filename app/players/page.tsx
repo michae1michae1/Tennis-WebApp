@@ -15,7 +15,8 @@ export default function PlayersPage() {
       skill: 4.5,
       wins: 24,
       losses: 8,
-      rank: 1
+      rank: 1,
+      tournaments: 12
     },
     {
       id: '2',
@@ -24,7 +25,8 @@ export default function PlayersPage() {
       skill: 4.0,
       wins: 18,
       losses: 12,
-      rank: 2
+      rank: 2,
+      tournaments: 9
     },
     {
       id: '3',
@@ -33,7 +35,8 @@ export default function PlayersPage() {
       skill: 3.5,
       wins: 15,
       losses: 15,
-      rank: 3
+      rank: 3,
+      tournaments: 8
     },
     {
       id: '4',
@@ -42,7 +45,8 @@ export default function PlayersPage() {
       skill: 4.0,
       wins: 20,
       losses: 10,
-      rank: 4
+      rank: 4,
+      tournaments: 10
     },
     {
       id: '5',
@@ -51,7 +55,8 @@ export default function PlayersPage() {
       skill: 3.0,
       wins: 12,
       losses: 18,
-      rank: 5
+      rank: 5,
+      tournaments: 6
     },
     {
       id: '6',
@@ -60,7 +65,8 @@ export default function PlayersPage() {
       skill: 3.5,
       wins: 16,
       losses: 14,
-      rank: 6
+      rank: 6,
+      tournaments: 7
     }
   ];
 
@@ -104,7 +110,7 @@ export default function PlayersPage() {
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Skill Level</th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Record</th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Win %</th>
-              <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">Actions</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Tournaments</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -117,8 +123,8 @@ export default function PlayersPage() {
                     <div className="text-sm font-medium text-gray-900">#{player.rank}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 overflow-hidden">
+                    <Link href={`/players/${player.id}`} className="group flex items-center cursor-pointer transition-all duration-200">
+                      <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 overflow-hidden group-hover:ring-2 group-hover:ring-primary group-hover:ring-offset-1">
                         {player.profileImage ? (
                           <img
                             src={`${process.env.NODE_ENV === 'production' ? '/Tennis-WebApp' : ''}${player.profileImage}`}
@@ -132,9 +138,9 @@ export default function PlayersPage() {
                         )}
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">{player.name}</div>
+                        <div className="text-sm font-medium text-gray-900 group-hover:text-primary group-hover:underline">{player.name}</div>
                       </div>
-                    </div>
+                    </Link>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{player.skill.toFixed(1)}</div>
@@ -145,13 +151,8 @@ export default function PlayersPage() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{winPercentage}%</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <Link 
-                      href={`/players/${player.id}`} 
-                      className="text-accent hover:text-primary"
-                    >
-                      View Profile
-                    </Link>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{player.tournaments}</div>
                   </td>
                 </tr>
               );
