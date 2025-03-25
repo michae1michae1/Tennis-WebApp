@@ -11,6 +11,7 @@ export async function generateStaticParams() {
 }
 
 import Link from 'next/link';
+import { getTournamentType, getTournamentFormats, getTournamentTypeDisplay } from '@/app/utils/tournamentUtils';
 
 export default function TournamentDetail({ params }: { params: { id: string } }) {
   // This would be fetched from an API in a real app
@@ -89,33 +90,41 @@ export default function TournamentDetail({ params }: { params: { id: string } })
     }
   }
 
-  function getTournamentType(id: string): string {
-    switch(id) {
-      case '1': return 'custom';
-      case '2': return 'roundRobin';
-      case '3': return 'ladder';
-      case '4': return 'singleElimination';
-      case '5': return 'roundRobin';
-      default: return 'unknown';
-    }
-  }
+  const tournamentType = getTournamentType(params.id);
+  const isCustomType = tournamentType === 'custom';
+  const formats = isCustomType ? getTournamentFormats(params.id) : [];
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <div className="flex items-center justify-between mb-2">
           <h1 className="text-primary">{tournament.name}</h1>
-          <span className="px-3 py-1 bg-secondary/20 rounded-full text-sm">
-            {tournament.type}
-          </span>
+          <div className="flex flex-wrap gap-2">
+            {isCustomType ? (
+              <>
+                <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                  Custom Format
+                </span>
+                {formats.map((format, index) => (
+                  <span key={index} className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                    {getTournamentTypeDisplay(format)}
+                  </span>
+                ))}
+              </>
+            ) : (
+              <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                {getTournamentTypeDisplay(tournamentType)}
+              </span>
+            )}
+            <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+              {tournament.status}
+            </span>
+          </div>
         </div>
         <p className="text-gray-600 mb-4">{tournament.description}</p>
         <div className="flex items-center gap-4 text-sm text-gray-600">
           <div>
             <span className="font-medium">Dates:</span> {tournament.startDate} - {tournament.endDate}
-          </div>
-          <div>
-            <span className="font-medium">Status:</span> {tournament.status}
           </div>
           <div>
             <span className="font-medium">Organizer:</span> {tournament.organizer.name}
@@ -130,7 +139,16 @@ export default function TournamentDetail({ params }: { params: { id: string } })
             <h3 className="text-primary mb-4">Tournament Options</h3>
             <div className="space-y-2">
               <button className="btn btn-primary w-full">Register</button>
-              <button className="btn btn-outline w-full">View Bracket</button>
+              <Link href={`/tournaments/${params.id}/bracket`} className="btn btn-outline w-full text-center flex justify-center items-center">
+                View {isCustomType 
+                  ? (formats.includes('ladder') ? 'Ladder & Bracket' : 'Bracket')
+                  : tournamentType === 'ladder' ? 'Ladder' : 
+                    tournamentType === 'roundRobin' ? 'Round Robin' :
+                    tournamentType === 'singleElimination' ? 'Bracket' :
+                    tournamentType === 'doubleElimination' ? 'Double Elimination' :
+                    tournamentType === 'swiss' ? 'Swiss System' :
+                    tournamentType === 'groupStage' ? 'Group Stage' : 'Bracket'}
+              </Link>
               <Link href={`/tournaments/${params.id}/schedule`} className="btn btn-outline w-full text-center flex justify-center items-center">View Schedule</Link>
               <Link href={`/tournaments/${params.id}/report`} className="btn btn-outline w-full text-center flex justify-center items-center">Report Match</Link>
             </div>

@@ -56,7 +56,18 @@ export default function ReportClient({ tournament }: { tournament: Tournament })
   };
   
   return (
-    <>
+    <div className="bg-white rounded-lg shadow-sm p-6">
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-primary">Report Match Results</h1>
+        <Link href={`/tournaments/${tournament.id}`} className="text-primary hover:text-primary-dark flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-arrow-left">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Back to Tournament
+        </Link>
+      </div>
+      
       {successMessage && (
         <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
           {successMessage}
@@ -106,6 +117,6 @@ export default function ReportClient({ tournament }: { tournament: Tournament })
           onSubmit={handleScoreSubmit}
         />
       )}
-    </>
+    </div>
   );
 } 
