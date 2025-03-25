@@ -427,7 +427,7 @@ export function FullScreenCalendar({ data, onEventClick, onSearch }: FullScreenC
                       .filter((event) => isSameDay(event.day, day))
                       .map((day) => (
                         <div key={day.day.toString()} className="space-y-1.5">
-                          {day.events.slice(0, 1).map((event) => (
+                          {day.events.map((event) => (
                             <div
                               key={event.id}
                               className="flex flex-col items-start gap-1 rounded-lg border bg-secondary/10 p-2 text-xs leading-tight hover:bg-secondary/20 cursor-pointer transition-colors"
@@ -444,11 +444,6 @@ export function FullScreenCalendar({ data, onEventClick, onSearch }: FullScreenC
                               </p>
                             </div>
                           ))}
-                          {day.events.length > 1 && (
-                            <div className="text-xs text-muted-foreground">
-                              + {day.events.length - 1} more
-                            </div>
-                          )}
                         </div>
                       ))}
                   </div>

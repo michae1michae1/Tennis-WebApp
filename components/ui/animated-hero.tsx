@@ -15,16 +15,11 @@ function Hero() {
       "Ability", 
       "Journey",
       "Game",
-      "Skills",
       "Performance",
       "Potential",
-      "Technique",
       "Strategy",
       "Confidence",
       "Ranking",
-      "Serve",
-      "Volley",
-      "Footwork",
       "Precision",
       "Passion",
       "Matches",
@@ -33,8 +28,6 @@ function Hero() {
       "Network",
       "Training",
       "Coordination",
-      "Reflexes",
-      "Endurance",
       "Focus",
       "Challenge",
       "Victories",
@@ -91,18 +84,18 @@ function Hero() {
                 <motion.div
                   key={index}
                   className="absolute inset-0 flex items-center justify-center"
-                  initial={{ opacity: 0, y: goesUp ? 70 : -70 }}
+                  initial={{ opacity: 0, y: goesUp ? 100 : -100 }}
                   animate={{
                     opacity: titleNumber === index ? 1 : 0,
                     y: titleNumber === index ? 0 : 
                       (titleNumber > index) 
-                        ? (goesUp ? -70 : 70) // Exit direction opposite of entry
-                        : (goesUp ? 70 : -70)  // Entry direction
+                        ? (goesUp ? -100 : 100) // Exit direction opposite of entry
+                        : (goesUp ? 100 : -100)  // Entry direction
                   }}
                   transition={{ 
                     type: "spring",
                     stiffness: 150,
-                    damping: 12
+                    damping: 15
                   }}
                 >
                   {title}
@@ -118,7 +111,7 @@ function Hero() {
           initial={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
         >
-          Create, manage, and participate in custom tennis tournaments and ladder systems. 
+          Create, manage, and participate in custom tennis events. 
           Use popular formats and structures, or create your own!
         </motion.p>
 
